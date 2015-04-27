@@ -1,0 +1,12 @@
+<resources>
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="android:Theme.Holo.Light.DarkActionBar">
+        <item name="android:actionBarStyle">@style/ActionBar.Solid.Tab</item>
+    </style>
+
+    <style name="ActionBar.Solid.Tab" parent="@android:style/Widget.Holo.Light.ActionBar.Solid.Inverse">
+        <item name="android:background">#ef7d0b</item>
+        <item name="android:backgroundStacked">#ef7d0b</item>
+    </style>
+
+</resources>
