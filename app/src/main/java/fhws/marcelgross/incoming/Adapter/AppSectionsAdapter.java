@@ -1,9 +1,9 @@
 package fhws.marcelgross.incoming.Adapter;
 
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v13.app.FragmentPagerAdapter;
 
 import fhws.marcelgross.incoming.Fragments.DummySectionFragment;
 
@@ -20,6 +20,7 @@ public class AppSectionsAdapter extends FragmentPagerAdapter {
     @Override
     public Fragment getItem(int i) {
         switch (i) {
+
 
 
             default:

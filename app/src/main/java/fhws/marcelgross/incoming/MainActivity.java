@@ -1,9 +1,11 @@
 package fhws.marcelgross.incoming;
 
 import android.app.ActionBar;
+import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.Menu;
@@ -12,16 +14,18 @@ import android.view.MenuItem;
 import fhws.marcelgross.incoming.Adapter.AppSectionsAdapter;
 
 
-public class MainActivity extends FragmentActivity implements ActionBar.TabListener {
+public class MainActivity extends Activity implements ActionBar.TabListener {
 
     private AppSectionsAdapter mAppSectionsPagerAdapter;
     private ViewPager mViewPager;
+
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mAppSectionsPagerAdapter = new AppSectionsAdapter(getSupportFragmentManager());
+
+        mAppSectionsPagerAdapter = new AppSectionsAdapter(getFragmentManager());
         try{
 
             final ActionBar actionBar = getActionBar();
@@ -63,7 +67,6 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
                 actionBar.addTab(
                         actionBar.newTab()
                                 .setIcon(icon)
-                                        //.setText(mAppSectionsPagerAdapter.getPageTitle(i))
                                 .setTabListener(this));
             }
         }catch (NullPointerException e){
