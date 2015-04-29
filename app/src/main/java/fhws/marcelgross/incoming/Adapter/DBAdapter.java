@@ -8,7 +8,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import fhws.marcelgross.incoming.Objects.ContactObject;
@@ -184,6 +183,7 @@ public class DBAdapter extends SQLiteOpenHelper {
 
     //save date into DB
     public void saveContacts(List<ContactObject> contacts){
+        deleteTable(TABLE_CONTACT);
         SQLiteDatabase db = this.getWritableDatabase();
         int counter = 0;
         for (ContactObject current : contacts){
@@ -210,6 +210,7 @@ public class DBAdapter extends SQLiteOpenHelper {
         Log.d("Save Contacts", counter + " from " + contacts.size());
     }
     public void saveEvents(List<EventsObject> events){
+        deleteTable(TABLE_EVENT);
         SQLiteDatabase db = this.getWritableDatabase();
         int counter = 0;
         for (EventsObject current : events){
@@ -232,6 +233,7 @@ public class DBAdapter extends SQLiteOpenHelper {
         Log.d("Save Events", counter + " from " + events.size());
     }
     public void saveLinks(List<LinksObject> links){
+        deleteTable(TABLE_LINK);
         SQLiteDatabase db = this.getWritableDatabase();
         int counter = 0;
         for (LinksObject current : links){
@@ -247,6 +249,7 @@ public class DBAdapter extends SQLiteOpenHelper {
         Log.d("Save Links", counter + " from " + links.size());
     }
     public void savePois(List<NavigationObject> pois){
+        deleteTable(TABLE_NAVIGATION);
         SQLiteDatabase db = this.getWritableDatabase();
         int counter = 0;
         for (NavigationObject current : pois){
@@ -272,6 +275,7 @@ public class DBAdapter extends SQLiteOpenHelper {
         Log.d("Save Pois", counter + " from " + pois.size());
     }
     public void saveNews(List<NewsObject> news){
+        deleteTable(TABLE_NEWS);
         SQLiteDatabase db = this.getWritableDatabase();
         int counter = 0;
         for (NewsObject current : news){
@@ -394,7 +398,7 @@ public class DBAdapter extends SQLiteOpenHelper {
         Log.d("return pois", String.valueOf(pois.size()));
         return pois;
     }
-    public ArrayList<NewsObject> getAllNewts(){
+    public ArrayList<NewsObject> getAllNews(){
         ArrayList<NewsObject> news = new ArrayList<>();
         String query = "SELECT * FROM " + TABLE_NEWS;
         SQLiteDatabase db = this.getWritableDatabase();
@@ -414,5 +418,27 @@ public class DBAdapter extends SQLiteOpenHelper {
         db.close();
         Log.d("return news", String.valueOf(news.size()));
         return news;
+    }
+
+
+    public ArrayList<String> getAllNewsTitle(){
+        ArrayList<String> titles = new ArrayList<>();
+        String query = "SELECT * FROM " + TABLE_NEWS;
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+        if (cursor.moveToFirst()){
+            do {
+                titles.add(cursor.getString(1));
+            } while (cursor.moveToNext());
+        }
+        db.close();
+        Log.d("return newsTitle", String.valueOf(titles.size()));
+        return titles;
+    }
+
+
+    public void deleteTable(String tableName){
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("DELETE FROM " + tableName);
     }
 }
