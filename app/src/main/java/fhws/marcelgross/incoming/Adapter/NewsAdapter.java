@@ -7,12 +7,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import fhws.marcelgross.incoming.MainActivity;
 import fhws.marcelgross.incoming.NewsActivity;
 import fhws.marcelgross.incoming.R;
 
@@ -71,8 +68,8 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder>{
 
         public ViewHolder(final View itemView){
             super(itemView);
-            title = (TextView) itemView.findViewById(R.id.newsCard_title_tv);
-            date = (TextView) itemView.findViewById(R.id.newsCard_date_tv);
+            title = (TextView) itemView.findViewById(R.id.eventsCard_title_tv);
+            date = (TextView) itemView.findViewById(R.id.eventsCard_date_tv);
             description = (TextView) itemView.findViewById(R.id.newsCard_description_tv);
 
         }
