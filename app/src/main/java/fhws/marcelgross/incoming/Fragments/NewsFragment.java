@@ -64,7 +64,7 @@ public class NewsFragment extends Fragment {
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
 
 
-        mNewsAdapter = new NewsAdapter(newsObjects, R.layout.news_card);
+        mNewsAdapter = new NewsAdapter(newsObjects, R.layout.news_card, getActivity());
         mRecyclerView.setAdapter(mNewsAdapter);
         mNewsAdapter.notifyDataSetChanged();
     }

@@ -11,4 +11,5 @@
     <string name="title">Titel</string>
     <string name="date">Datum</string>
     <string name="description">Beschreibung</string>
+    <string name="title_activity_news">News</string>
 </resources>

@@ -1,5 +1,7 @@
 package fhws.marcelgross.incoming.Adapter;
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +11,9 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import fhws.marcelgross.incoming.MainActivity;
+import fhws.marcelgross.incoming.NewsActivity;
 import fhws.marcelgross.incoming.R;
 
 import fhws.marcelgross.incoming.Objects.NewsObject;
@@ -20,10 +25,12 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder>{
 
     private List<NewsObject> newsObjects;
     private int rowLayout;
+    private Context context;
 
-    public NewsAdapter(List<NewsObject> newsObjects, int rowLayout){
+    public NewsAdapter(List<NewsObject> newsObjects, int rowLayout, Context context){
         this.newsObjects = newsObjects;
         this.rowLayout = rowLayout;
+        this.context = context;
     }
 
     @Override
@@ -41,7 +48,11 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder>{
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(holder.itemView.getContext(), newsObject.getTitle(), Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(context, NewsActivity.class);
+                intent.putExtra("title", newsObject.getTitle());
+                intent.putExtra("date", newsObject.getDate());
+                intent.putExtra("description", newsObject.getText());
+                context.startActivity(intent);
             }
         });
     }
