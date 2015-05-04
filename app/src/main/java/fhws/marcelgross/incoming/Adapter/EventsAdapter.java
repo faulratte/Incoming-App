@@ -4,12 +4,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.provider.CalendarContract;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -43,25 +45,32 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
         final EventsObject eventsObject = eventsObjects.get(position);
         holder.title.setText(eventsObject.getTitle());
         holder.date.setText(eventsObject.getTermin());
+
         holder.button.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View view) {
+
+
+                int[] dateArray = dateStringToIntArray(eventsObject.getTermin());
+                long[] startEndTime = getStartAndEndTime(eventsObject.getTermin(), eventsObject.getTime());
+
+
 
                 Intent intent = new Intent(Intent.ACTION_INSERT);
                 intent.setType("vnd.android.cursor.item/event");
                 intent.putExtra(CalendarContract.Events.TITLE, eventsObject.getTitle());
                 intent.putExtra(CalendarContract.Events.EVENT_LOCATION, eventsObject.getLocation());
                 intent.putExtra(CalendarContract.Events.DESCRIPTION, eventsObject.getLocation());
-//todo change Time for calendar
-// Setting dates
-                GregorianCalendar calDate = new GregorianCalendar(2012, 10, 02);
+
+                //year, month, day
+                GregorianCalendar calDate = new GregorianCalendar(dateArray[2], dateArray[1]-1, dateArray[0]);
                 intent.putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME,
-                        calDate.getTimeInMillis());
+                        startEndTime[0]);
                 intent.putExtra(CalendarContract.EXTRA_EVENT_END_TIME,
-                        calDate.getTimeInMillis());
+                        startEndTime[1]);
 
 //                intent.putExtra(CalendarContract.EXTRA_EVENT_ALL_DAY, true);
-//                intent.putExtra(CalendarContract.Events.RRULE, "FREQ=WEEKLY;COUNT=11;WKST=SU;BYDAY=TU,TH");
 
                 context.startActivity(intent);
 
@@ -97,5 +106,39 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
             button = (ImageButton) itemView.findViewById(R.id.eventsCard_btn);
 
         }
+    }
+
+    public int[] dateStringToIntArray(String date){
+        String[] stringArray = date.split("\\.");
+        int[] dateArray = new int[stringArray.length];
+        for (int i = 0; i < dateArray.length; i++){
+            dateArray[i] = Integer.parseInt(stringArray[i]);
+        }
+
+        return dateArray;
+    }
+    public int[] timeStringToIntArray(String time) {
+        String[] stringArray = time.split(":");
+        int[] timeArray = new int[stringArray.length];
+        for (int i = 0; i < timeArray.length; i++) {
+            timeArray[i] = Integer.parseInt(stringArray[i]);
+        }
+        return timeArray;
+    }
+    public long[] getStartAndEndTime(String date, String time){
+        int[] timeArray = timeStringToIntArray(time);
+        int[] dateArray = dateStringToIntArray(date);
+        long[] startAndEndTime = new long[2];
+
+        for (int i = 0; i < startAndEndTime.length; i++){
+            Calendar c = Calendar.getInstance();
+            // year, month, day, hourOfDay, minute
+            if (i == 1)
+                timeArray[0] += 1;
+            c.set(dateArray[2], dateArray[1], dateArray[0], timeArray[0], timeArray[1]);
+            startAndEndTime[i] = c.getTimeInMillis();
+        }
+
+        return startAndEndTime;
     }
 }
