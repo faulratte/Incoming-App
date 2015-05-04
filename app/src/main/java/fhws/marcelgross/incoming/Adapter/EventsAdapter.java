@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.provider.CalendarContract;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +11,6 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 import fhws.marcelgross.incoming.Objects.EventsObject;
@@ -51,11 +49,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
             @Override
             public void onClick(View view) {
 
-
-                int[] dateArray = dateStringToIntArray(eventsObject.getTermin());
                 long[] startEndTime = getStartAndEndTime(eventsObject.getTermin(), eventsObject.getTime());
-
-
 
                 Intent intent = new Intent(Intent.ACTION_INSERT);
                 intent.setType("vnd.android.cursor.item/event");
@@ -64,12 +58,8 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
                 intent.putExtra(CalendarContract.Events.DESCRIPTION, eventsObject.getLocation());
 
                 //year, month, day
-                GregorianCalendar calDate = new GregorianCalendar(dateArray[2], dateArray[1]-1, dateArray[0]);
-                intent.putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME,
-                        startEndTime[0]);
-                intent.putExtra(CalendarContract.EXTRA_EVENT_END_TIME,
-                        startEndTime[1]);
-
+                intent.putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, startEndTime[0]);
+                intent.putExtra(CalendarContract.EXTRA_EVENT_END_TIME, startEndTime[1]);
 //                intent.putExtra(CalendarContract.EXTRA_EVENT_ALL_DAY, true);
 
                 context.startActivity(intent);
