@@ -47,6 +47,9 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
             @Override
             public void onClick(View view) {
 
+                //date day.month.year
+                String[] dateArray = eventsObject.getTermin().split(".");
+
                 Intent intent = new Intent(Intent.ACTION_INSERT);
                 intent.setType("vnd.android.cursor.item/event");
                 intent.putExtra(CalendarContract.Events.TITLE, eventsObject.getTitle());
