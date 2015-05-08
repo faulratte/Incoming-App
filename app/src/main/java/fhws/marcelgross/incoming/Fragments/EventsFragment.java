@@ -12,9 +12,13 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.owlike.genson.GenericType;
 import com.owlike.genson.Genson;
@@ -38,6 +42,7 @@ import fhws.marcelgross.incoming.R;
  */
 public class EventsFragment extends Fragment {
 
+
     private static final String URL = "http://backend.applab.fhws.de:8080/incoming/api/events";
 
     private RecyclerView mRecyclerView;
@@ -45,11 +50,21 @@ public class EventsFragment extends Fragment {
     private EventsAdapter mEventsAdapter;
     private DBAdapter db;
     private View view;
+    private boolean[] checkedBoxes = new boolean[4];
+
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        for (int i = 0; i < checkedBoxes.length; i++){
+            checkedBoxes[i] = true;
+        }
+        setHasOptionsMenu(true);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_events, container, false);
         db = new DBAdapter(getActivity());
@@ -124,4 +139,43 @@ public class EventsFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.events_menu, menu);
+        menu.getItem(0).setChecked(checkedBoxes[0]);
+        menu.getItem(1).setChecked(checkedBoxes[1]);
+        menu.getItem(2).setChecked(checkedBoxes[2]);
+        menu.getItem(3).setChecked(checkedBoxes[3]);
+
+    }
+
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        item.setChecked(!item.isChecked());
+
+        switch (item.getItemId()){
+            case R.id.action_fhws:
+                checkedBoxes[0] = item.isChecked();
+                break;
+            case R.id.action_uni:
+                checkedBoxes[1] = item.isChecked();
+                break;
+            case R.id.action_ics:
+                checkedBoxes[2] = item.isChecked();
+                break;
+            case R.id.action_holiday:
+                checkedBoxes[3] = item.isChecked();
+                break;
+            default:
+                break;
+        }
+        String test = "";
+        for (boolean c : checkedBoxes){
+            test += String.valueOf(c)+" ";
+        }
+        Toast.makeText(getActivity(), test, Toast.LENGTH_SHORT).show();
+        return super.onOptionsItemSelected(item);
+    }
 }

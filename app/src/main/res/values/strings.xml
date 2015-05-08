@@ -16,4 +16,10 @@
     <string name="time">Zeit</string>
     <string name="contact_person">Kontaktperson</string>
     <string name="category">Kategorie</string>
+
+
+    <string name="fhws">FHWS</string>
+    <string name="uni">Uni</string>
+    <string name="ics">ICS</string>
+    <string name="holiday">Feiertage</string>
 </resources>

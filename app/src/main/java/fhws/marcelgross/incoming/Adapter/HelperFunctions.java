@@ -35,7 +35,7 @@ public class HelperFunctions {
             // year, month, day, hourOfDay, minute
             if (i == 1)
                 timeArray[0] += 1;
-            c.set(dateArray[2], dateArray[1], dateArray[0], timeArray[0], timeArray[1]);
+            c.set(dateArray[2], dateArray[1]-1, dateArray[0], timeArray[0], timeArray[1]);
             startAndEndTime[i] = c.getTimeInMillis();
         }
 
