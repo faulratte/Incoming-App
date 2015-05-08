@@ -449,6 +449,20 @@ public class DBAdapter extends SQLiteOpenHelper {
         Log.d("return eventsTitle", String.valueOf(titles.size()));
         return titles;
     }
+    public ArrayList<String> getAllLinksTitle(){
+        ArrayList<String> titles = new ArrayList<>();
+        String query = "SELECT * FROM " + TABLE_LINK;
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+        if (cursor.moveToFirst()){
+            do {
+                titles.add(cursor.getString(1));
+            } while (cursor.moveToNext());
+        }
+        db.close();
+        Log.d("return linksTitle", String.valueOf(titles.size()));
+        return titles;
+    }
 
 
     public void deleteTable(String tableName){

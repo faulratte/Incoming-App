@@ -1,5 +1,6 @@
 package fhws.marcelgross.incoming;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;

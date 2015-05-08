@@ -36,8 +36,13 @@
         </activity>
         <activity
             android:name=".NewsActivity"
-            android:parentActivityName=".MainActivity"
-            android:label="@string/title_activity_news" >
+            android:label="@string/title_activity_news"
+            android:parentActivityName=".MainActivity" >
+        </activity>
+        <activity
+            android:name=".EventsActivity"
+            android:label="@string/title_activity_events"
+            android:parentActivityName=".MainActivity">
         </activity>
     </application>
 

@@ -13,6 +13,7 @@ import android.widget.TextView;
 import java.util.Calendar;
 import java.util.List;
 
+import fhws.marcelgross.incoming.EventsActivity;
 import fhws.marcelgross.incoming.Objects.EventsObject;
 import fhws.marcelgross.incoming.R;
 
@@ -24,6 +25,8 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
     private List<EventsObject> eventsObjects;
     private int rowLayout;
     private Context context;
+
+    private HelperFunctions hf = new HelperFunctions();
 
     public EventsAdapter(List<EventsObject> eventsObjects, int rowLayout, Context context){
         this.eventsObjects = eventsObjects;
@@ -49,13 +52,13 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
             @Override
             public void onClick(View view) {
 
-                long[] startEndTime = getStartAndEndTime(eventsObject.getTermin(), eventsObject.getTime());
+                long[] startEndTime = hf.getStartAndEndTime(eventsObject.getTermin(), eventsObject.getTime());
 
                 Intent intent = new Intent(Intent.ACTION_INSERT);
                 intent.setType("vnd.android.cursor.item/event");
                 intent.putExtra(CalendarContract.Events.TITLE, eventsObject.getTitle());
                 intent.putExtra(CalendarContract.Events.EVENT_LOCATION, eventsObject.getLocation());
-                intent.putExtra(CalendarContract.Events.DESCRIPTION, eventsObject.getLocation());
+                intent.putExtra(CalendarContract.Events.DESCRIPTION, eventsObject.getText());
 
                 //year, month, day
                 intent.putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, startEndTime[0]);
@@ -69,11 +72,15 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Intent intent = new Intent(context, NewsActivity.class);
-//                intent.putExtra("title", newsObject.getTitle());
-//                intent.putExtra("date", newsObject.getDate());
-//                intent.putExtra("description", newsObject.getText());
-//                context.startActivity(intent);
+                Intent intent = new Intent(context, EventsActivity.class);
+                intent.putExtra("title", eventsObject.getTitle());
+                intent.putExtra("date", eventsObject.getTermin());
+                intent.putExtra("time", eventsObject.getTime());
+                intent.putExtra("contactperson", eventsObject.getContactperson());
+                intent.putExtra("category", eventsObject.getCategory());
+                intent.putExtra("description", eventsObject.getText());
+                intent.putExtra("location", eventsObject.getLocation());
+                context.startActivity(intent);
             }
         });
     }
@@ -98,37 +105,5 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
         }
     }
 
-    public int[] dateStringToIntArray(String date){
-        String[] stringArray = date.split("\\.");
-        int[] dateArray = new int[stringArray.length];
-        for (int i = 0; i < dateArray.length; i++){
-            dateArray[i] = Integer.parseInt(stringArray[i]);
-        }
 
-        return dateArray;
-    }
-    public int[] timeStringToIntArray(String time) {
-        String[] stringArray = time.split(":");
-        int[] timeArray = new int[stringArray.length];
-        for (int i = 0; i < timeArray.length; i++) {
-            timeArray[i] = Integer.parseInt(stringArray[i]);
-        }
-        return timeArray;
-    }
-    public long[] getStartAndEndTime(String date, String time){
-        int[] timeArray = timeStringToIntArray(time);
-        int[] dateArray = dateStringToIntArray(date);
-        long[] startAndEndTime = new long[2];
-
-        for (int i = 0; i < startAndEndTime.length; i++){
-            Calendar c = Calendar.getInstance();
-            // year, month, day, hourOfDay, minute
-            if (i == 1)
-                timeArray[0] += 1;
-            c.set(dateArray[2], dateArray[1], dateArray[0], timeArray[0], timeArray[1]);
-            startAndEndTime[i] = c.getTimeInMillis();
-        }
-
-        return startAndEndTime;
-    }
 }

@@ -7,6 +7,7 @@ import android.support.v13.app.FragmentPagerAdapter;
 
 import fhws.marcelgross.incoming.Fragments.DummySectionFragment;
 import fhws.marcelgross.incoming.Fragments.EventsFragment;
+import fhws.marcelgross.incoming.Fragments.LinksFragment;
 import fhws.marcelgross.incoming.Fragments.NewsFragment;
 import fhws.marcelgross.incoming.R;
 
@@ -27,6 +28,8 @@ public class AppSectionsAdapter extends FragmentPagerAdapter {
                 return new NewsFragment();
             case 1:
                 return new EventsFragment();
+            case 4:
+                return new LinksFragment();
 
             default:
                 Fragment fragment = new DummySectionFragment();
