@@ -22,4 +22,12 @@
     <string name="uni">Uni</string>
     <string name="ics">ICS</string>
     <string name="holiday">Feiertage</string>
+    <string name="name">Name</string>
+    <string name="status">Status</string>
+    <string name="consultationHour">Sprechstunde</string>
+    <string name="office">Büro</string>
+    <string name="zipCode">PLZ</string>
+    <string name="homepage">Homepage</string>
+    <string name="room">Zimmer</string>
+    <string name="city">Stadt</string>
 </resources>

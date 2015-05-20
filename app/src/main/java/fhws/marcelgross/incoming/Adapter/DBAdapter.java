@@ -463,6 +463,22 @@ public class DBAdapter extends SQLiteOpenHelper {
         Log.d("return linksTitle", String.valueOf(titles.size()));
         return titles;
     }
+    public ArrayList<String> getAllContactNames(){
+        ArrayList<String> names = new ArrayList<>();
+        String query = "SELECT * FROM " + TABLE_CONTACT;
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+        if (cursor.moveToFirst()){
+            do {
+                String a = cursor.getString(3);
+                String b = cursor.getString(4);
+                names.add(a+" "+b);
+            } while (cursor.moveToNext());
+        }
+        db.close();
+        Log.d("return Names", String.valueOf(names.size()));
+        return names;
+    }
 
 
     public void deleteTable(String tableName){

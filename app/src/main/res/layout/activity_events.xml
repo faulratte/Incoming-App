@@ -78,18 +78,17 @@
                 android:layout_below="@+id/event_contactperson_tv"
                 android:text="@string/description" />
 
+            <ImageButton
+                android:id="@+id/calendar_ib"
+                android:layout_alignParentBottom="false"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/ic_calendar_btn"
+                android:background="@drawable/fab"
+                android:layout_below="@+id/event_description_tv"
+                android:layout_alignRight="@+id/event_category_tv" />
+
         </RelativeLayout>
     </android.support.v7.widget.CardView>
 
-    <ImageButton
-        android:id="@+id/calendar_ib"
-        android:layout_alignParentBottom="true"
-        android:layout_alignEnd="@+id/event_cv"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
-        android:src="@mipmap/ic_calendar_btn"
-        android:background="@drawable/fab"
-        />
 </RelativeLayout>

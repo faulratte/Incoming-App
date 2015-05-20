@@ -161,4 +161,25 @@ public class ContactObject {
     public void setPhoto(String photo) {
         this.photo = photo;
     }
+
+    @Override
+    public String toString() {
+        return "ContactObject{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", status='" + status + '\'' +
+                ", firstname='" + firstname + '\'' +
+                ", lastname='" + lastname + '\'' +
+                ", tel='" + tel + '\'' +
+                ", fax='" + fax + '\'' +
+                ", email='" + email + '\'' +
+                ", homepage='" + homepage + '\'' +
+                ", street='" + street + '\'' +
+                ", zip=" + zip +
+                ", city='" + city + '\'' +
+                ", room='" + room + '\'' +
+                ", consultationhour='" + consultationhour + '\'' +
+                ", photo='" + photo + '\'' +
+                '}';
+    }
 }

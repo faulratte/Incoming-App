@@ -5,6 +5,7 @@ import android.app.FragmentManager;
 import android.os.Bundle;
 import android.support.v13.app.FragmentPagerAdapter;
 
+import fhws.marcelgross.incoming.Fragments.ContactFragment;
 import fhws.marcelgross.incoming.Fragments.DummySectionFragment;
 import fhws.marcelgross.incoming.Fragments.EventsFragment;
 import fhws.marcelgross.incoming.Fragments.LinksFragment;
@@ -28,6 +29,8 @@ public class AppSectionsAdapter extends FragmentPagerAdapter {
                 return new NewsFragment();
             case 1:
                 return new EventsFragment();
+            case 3:
+                return new ContactFragment();
             case 4:
                 return new LinksFragment();
 
@@ -40,7 +43,7 @@ public class AppSectionsAdapter extends FragmentPagerAdapter {
         }
     }
 
-    //Anzahl der Tabs
+    //number of tabs
     @Override
     public int getCount() {
         return 5;

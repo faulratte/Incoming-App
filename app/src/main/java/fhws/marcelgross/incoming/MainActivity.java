@@ -1,11 +1,11 @@
 package fhws.marcelgross.incoming;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -16,7 +16,10 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 
     private AppSectionsAdapter mAppSectionsPagerAdapter;
     private ViewPager mViewPager;
+    private int pos;
 
+
+    private ActionBar actionBar;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,7 +28,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 
         mAppSectionsPagerAdapter = new AppSectionsAdapter(getFragmentManager());
 
-            final ActionBar actionBar = getSupportActionBar();
+           actionBar = getSupportActionBar();
 
             actionBar.setHomeButtonEnabled(false);
             actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
@@ -36,6 +39,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
                 @Override
                 public void onPageSelected(int position) {
                     actionBar.setSelectedNavigationItem(position);
+
                 }
             });
 
@@ -48,8 +52,23 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        pos = mViewPager.getCurrentItem();
+        Log.d("war hier", pos+"");
 
-  /*  @Override
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d("resume", pos+"");
+
+
+    }
+
+    /*  @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
@@ -65,7 +84,6 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 
     return super.onOptionsItemSelected(item);
     }*/
-
 
 
     @Override
