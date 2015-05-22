@@ -1,5 +1,6 @@
 package fhws.marcelgross.incoming.Adapter;
 
+import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
@@ -23,11 +24,13 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder>{
     private List<NewsObject> newsObjects;
     private int rowLayout;
     private Context context;
+    private FragmentManager fragmentManager;
 
-    public NewsAdapter(List<NewsObject> newsObjects, int rowLayout, Context context){
+    public NewsAdapter(List<NewsObject> newsObjects, int rowLayout, Context context, FragmentManager fragmentManager){
         this.newsObjects = newsObjects;
         this.rowLayout = rowLayout;
         this.context = context;
+        this.fragmentManager = fragmentManager;
     }
 
     @Override
@@ -45,6 +48,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder>{
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 Intent intent = new Intent(context, NewsActivity.class);
                 intent.putExtra("title", newsObject.getTitle());
                 intent.putExtra("date", newsObject.getDate());

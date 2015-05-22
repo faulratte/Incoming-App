@@ -11,12 +11,10 @@ import android.view.MenuItem;
 
 import fhws.marcelgross.incoming.Adapter.AppSectionsAdapter;
 
-
-public class MainActivity extends ActionBarActivity implements ActionBar.TabListener {
+    public class MainActivity extends ActionBarActivity implements ActionBar.TabListener {
 
     private AppSectionsAdapter mAppSectionsPagerAdapter;
     private ViewPager mViewPager;
-    private int pos;
 
 
     private ActionBar actionBar;
@@ -52,23 +50,8 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        pos = mViewPager.getCurrentItem();
-        Log.d("war hier", pos+"");
 
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Log.d("resume", pos+"");
-
-
-    }
-
-    /*  @Override
+      @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
@@ -83,7 +66,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         }
 
     return super.onOptionsItemSelected(item);
-    }*/
+    }
 
 
     @Override

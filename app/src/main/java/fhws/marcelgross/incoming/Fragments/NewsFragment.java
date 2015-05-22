@@ -1,6 +1,7 @@
 package fhws.marcelgross.incoming.Fragments;
 
 
+import android.app.FragmentManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -65,7 +66,7 @@ public class NewsFragment extends Fragment {
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(llm);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        mNewsAdapter = new NewsAdapter(newsObjects, R.layout.news_card, getActivity());
+        mNewsAdapter = new NewsAdapter(newsObjects, R.layout.news_card, getActivity(), getFragmentManager());
         mRecyclerView.setAdapter(mNewsAdapter);
         mNewsAdapter.notifyDataSetChanged();
     }
