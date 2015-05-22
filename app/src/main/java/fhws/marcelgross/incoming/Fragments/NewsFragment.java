@@ -108,12 +108,11 @@ public class NewsFragment extends Fragment {
             mProgressBar.setVisibility(View.GONE);
 
             int counter = 0;
-            ArrayList<String> titles = db.getAllNewsTitle();
+            ArrayList<Long> ids = db.getAllNewsIDs();
 
-            for (int i = 0; i<newsObjects.size();i++){
-                if (!titles.contains(newsObjects.get(i).getTitle())){
+            for (int i = 0; i<newsObjects.size(); i++){
+                if (!ids.contains(newsObjects.get(i).getId()))
                     ++counter;
-                }
             }
             db.saveNews(newsObjects);
             if (counter>0){

@@ -107,12 +107,10 @@ public class ContactFragment extends Fragment {
             mProgressBar.setVisibility(View.GONE);
 
             int counter = 0;
-            ArrayList<String> names = db.getAllContactNames();
-
-            for (int i = 0; i<contactObjects.size(); i++){
-                if (!names.contains(contactObjects.get(i).getFirstname()+" "+contactObjects.get(i).getLastname())){
+            ArrayList<Long> ids = db.getAllContactIDs();
+            for (int i = 0; i < contactObjects.size(); i++){
+                if (!ids.contains(contactObjects.get(i).getId()))
                     ++counter;
-                }
             }
             db.saveContacts(contactObjects);
             if(counter>0)

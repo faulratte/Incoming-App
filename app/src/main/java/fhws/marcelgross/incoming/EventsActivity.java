@@ -4,13 +4,10 @@ import android.content.Intent;
 import android.provider.CalendarContract;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
-
-import java.util.Calendar;
 
 import fhws.marcelgross.incoming.Adapter.HelperFunctions;
 

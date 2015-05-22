@@ -1,7 +1,6 @@
 package fhws.marcelgross.incoming.Fragments;
 
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -30,7 +29,6 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import java.util.ArrayList;
-import java.util.Locale;
 
 import fhws.marcelgross.incoming.Adapter.DBAdapter;
 import fhws.marcelgross.incoming.Adapter.EventsAdapter;
@@ -51,25 +49,24 @@ public class EventsFragment extends Fragment {
     private DBAdapter db;
     private View view;
     private boolean[] checkedBoxes = new boolean[4];
+    private final String prefName = "event_box";
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        for (int i = 0; i < checkedBoxes.length; i++){
-            checkedBoxes[i] = true;
-        }
+
+        loadSavedPreferences();
         setHasOptionsMenu(true);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_events, container, false);
         db = new DBAdapter(getActivity());
         new BackgroundTask().execute();
-        setUpView(db.getAllEvents());
+        setUpView(db.getAllEvents(checkedBoxes));
 
         mProgressBar = (ProgressBar) view.findViewById(R.id.events_progressBar);
 
@@ -125,16 +122,14 @@ public class EventsFragment extends Fragment {
 
 
             int counter = 0;
-            ArrayList<String> titles = db.getAllEventsTitle();
-
+            ArrayList<Long> ids = db.getAllEventsIDs();
             for (int i = 0; i < eventsObjects.size(); i++){
-                if (!titles.contains(eventsObjects.get(i).getTitle())){
+                if (!ids.contains(eventsObjects.get(i).getId()))
                     ++counter;
-                }
             }
             db.saveEvents(eventsObjects);
             if (counter>0){
-                setUpView(db.getAllEvents());
+                setUpView(db.getAllEvents(checkedBoxes));
             }
         }
     }
@@ -171,11 +166,31 @@ public class EventsFragment extends Fragment {
             default:
                 break;
         }
-        String test = "";
-        for (boolean c : checkedBoxes){
-            test += String.valueOf(c)+" ";
+        if (!checkedBoxes[0]&&!checkedBoxes[1]&&!checkedBoxes[2]&&!checkedBoxes[3]){
+            Toast.makeText(getActivity(), R.string.pickAtLeastOneItem, Toast.LENGTH_LONG).show();
+        } else {
+            savePreferences();
+            setUpView(db.getAllEvents(checkedBoxes));
         }
-        Toast.makeText(getActivity(), test, Toast.LENGTH_SHORT).show();
         return super.onOptionsItemSelected(item);
+    }
+
+    private void savePreferences() {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        for (int i = 0; i < checkedBoxes.length; i++){
+            editor.putBoolean(prefName+i, checkedBoxes[i]);
+        }
+
+        editor.commit();
+    }
+
+    private void loadSavedPreferences(){
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+
+        for (int i = 0; i < checkedBoxes.length; i++){
+            checkedBoxes[i] = sharedPreferences.getBoolean(prefName+i, true);
+        }
     }
 }

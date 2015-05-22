@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.provider.CalendarContract;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,6 +47,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
         final EventsObject eventsObject = eventsObjects.get(position);
         holder.title.setText(eventsObject.getTitle());
         holder.date.setText(eventsObject.getTermin());
+        Log.d("eventid", eventsObject.getId()+"");
 
         holder.button.setOnClickListener(new View.OnClickListener() {
 

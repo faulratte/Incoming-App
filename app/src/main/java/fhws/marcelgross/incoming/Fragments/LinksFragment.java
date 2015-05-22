@@ -107,12 +107,10 @@ public class LinksFragment extends Fragment {
             mProgressBar.setVisibility(View.GONE);
 
             int counter = 0;
-            ArrayList<String> titles = db.getAllLinksTitle();
-
-            for (int i = 0; i<linksObjects.size();i++){
-                if (!titles.contains(linksObjects.get(i).getTitle())){
+            ArrayList<Long> ids = db.getAllLinksIDs();
+            for (int i = 0; i<linksObjects.size(); i++){
+                if (!ids.contains(linksObjects.get(i).getId()))
                     ++counter;
-                }
             }
             db.saveLinks(linksObjects);
             if (counter>0){

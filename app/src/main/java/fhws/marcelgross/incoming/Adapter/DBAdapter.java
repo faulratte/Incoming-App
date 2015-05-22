@@ -15,11 +15,14 @@ import fhws.marcelgross.incoming.Objects.EventsObject;
 import fhws.marcelgross.incoming.Objects.LinksObject;
 import fhws.marcelgross.incoming.Objects.NavigationObject;
 import fhws.marcelgross.incoming.Objects.NewsObject;
+import fhws.marcelgross.incoming.R;
 
 /**
  * Created by Marcel on 28.04.2015.
  */
 public class DBAdapter extends SQLiteOpenHelper {
+
+    private Context context;
 
     private static final String DATABASE_NAME = "incoming_db";
     private static final int DATABASE_VERSION = 1;
@@ -86,6 +89,7 @@ public class DBAdapter extends SQLiteOpenHelper {
 
     public DBAdapter(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        this.context = context;
     }
 
     private String sqlQueryContact(){
@@ -320,13 +324,15 @@ public class DBAdapter extends SQLiteOpenHelper {
                 contacts.add(contact);
             } while (cursor.moveToNext());
         }
+        cursor.close();
         db.close();
         Log.d("return contacts", String.valueOf(contacts.size()));
         return contacts;
     }
-    public ArrayList<EventsObject> getAllEvents(){
+    public ArrayList<EventsObject> getAllEvents(boolean[] checkBoxen){
         ArrayList<EventsObject> events = new ArrayList<>();
-        String query = "SELECT * FROM " + TABLE_EVENT;
+        String query =returnEventSqlStatement(checkBoxen);
+        Log.d("statement", query);
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
         if (cursor.moveToFirst()){
@@ -346,6 +352,7 @@ public class DBAdapter extends SQLiteOpenHelper {
                 events.add(event);
             } while (cursor.moveToNext());
         }
+        cursor.close();
         db.close();
         Log.d("return events", String.valueOf(events.size()));
         return events;
@@ -365,6 +372,7 @@ public class DBAdapter extends SQLiteOpenHelper {
                 links.add(link);
             } while (cursor.moveToNext());
         }
+        cursor.close();
         db.close();
         Log.d("return links", String.valueOf(links.size()));
         return links;
@@ -394,6 +402,7 @@ public class DBAdapter extends SQLiteOpenHelper {
                 pois.add(poi);
             } while (cursor.moveToNext());
         }
+        cursor.close();
         db.close();
         Log.d("return pois", String.valueOf(pois.size()));
         return pois;
@@ -415,74 +424,138 @@ public class DBAdapter extends SQLiteOpenHelper {
                 news.add(newsObject);
             } while (cursor.moveToNext());
         }
+        cursor.close();
         db.close();
         Log.d("return news", String.valueOf(news.size()));
         return news;
     }
 
 
-    public ArrayList<String> getAllNewsTitle(){
-        ArrayList<String> titles = new ArrayList<>();
+    public ArrayList<Long> getAllNewsIDs(){
+        ArrayList<Long> ids = new ArrayList<>();
         String query = "SELECT * FROM " + TABLE_NEWS;
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
         if (cursor.moveToFirst()){
             do {
-                titles.add(cursor.getString(1));
+                ids.add(cursor.getLong(cursor.getColumnIndex(COLUMN_NEWS_ID)));
             } while (cursor.moveToNext());
         }
+        cursor.close();
         db.close();
-        Log.d("return newsTitle", String.valueOf(titles.size()));
-        return titles;
+        Log.d("return newsIDs", String.valueOf(ids.size()));
+        return ids;
     }
-    public ArrayList<String> getAllEventsTitle(){
-        ArrayList<String> titles = new ArrayList<>();
+    public ArrayList<Long> getAllEventsIDs(){
+        ArrayList<Long> ids = new ArrayList<>();
         String query = "SELECT * FROM " + TABLE_EVENT;
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
         if (cursor.moveToFirst()){
             do {
-                titles.add(cursor.getString(1));
+                ids.add(cursor.getLong(cursor.getColumnIndex(COLUMN_EVENT_ID)));
             } while (cursor.moveToNext());
         }
+        cursor.close();
         db.close();
-        Log.d("return eventsTitle", String.valueOf(titles.size()));
-        return titles;
+        Log.d("return eventIDs", String.valueOf(ids.size()));
+        return ids;
     }
-    public ArrayList<String> getAllLinksTitle(){
-        ArrayList<String> titles = new ArrayList<>();
+    public ArrayList<Long> getAllLinksIDs(){
+        ArrayList<Long> ids = new ArrayList<>();
         String query = "SELECT * FROM " + TABLE_LINK;
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
         if (cursor.moveToFirst()){
             do {
-                titles.add(cursor.getString(1));
+                ids.add(cursor.getLong(cursor.getColumnIndex(COLUMN_LINK_ID)));
             } while (cursor.moveToNext());
         }
+        cursor.close();
         db.close();
-        Log.d("return linksTitle", String.valueOf(titles.size()));
-        return titles;
+        Log.d("return linksIDs", String.valueOf(ids.size()));
+        return ids;
     }
-    public ArrayList<String> getAllContactNames(){
-        ArrayList<String> names = new ArrayList<>();
+    public ArrayList<Long> getAllContactIDs(){
+        ArrayList<Long> ids = new ArrayList<>();
         String query = "SELECT * FROM " + TABLE_CONTACT;
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
         if (cursor.moveToFirst()){
             do {
-                String a = cursor.getString(3);
-                String b = cursor.getString(4);
-                names.add(a+" "+b);
+                ids.add(cursor.getLong(cursor.getColumnIndex(COLUMN_CONTACT_ID)));
             } while (cursor.moveToNext());
         }
+        cursor.close();
         db.close();
-        Log.d("return Names", String.valueOf(names.size()));
-        return names;
+        Log.d("return contactIDs", String.valueOf(ids.size()));
+        return ids;
     }
-
 
     public void deleteTable(String tableName){
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("DELETE FROM " + tableName);
+    }
+
+
+    public String returnEventSqlStatement(boolean[] checkboxen){
+        String fhws = context.getResources().getString(R.string.fhws);
+        String uni = context.getResources().getString(R.string.uni);
+        String isc = context.getResources().getString(R.string.isc);
+        String holidays = context.getResources().getString(R.string.holiday);
+        String result = "SELECT * FROM " + TABLE_EVENT;
+
+        String temp = String.valueOf(checkboxen[0]+" "+checkboxen[1]+" "+checkboxen[2]+" "+checkboxen[3]);
+        switch (temp){
+            case "false false false false":
+                break;
+            case "false false false true":
+                result = result + " WHERE " + COLUMN_EVENT_CATEGORY + "= '" + holidays + "'";
+                break;
+            case "false false true false":
+                result = result + " WHERE " + COLUMN_EVENT_CATEGORY + "= '" + isc + "'";
+                break;
+            case "false false true true":
+                result = result + " WHERE " + COLUMN_EVENT_CATEGORY + "= '" + holidays + "' OR " + COLUMN_EVENT_CATEGORY + "= '" + isc + "'";
+                break;
+            case "false true false false":
+                result = result + " WHERE " + COLUMN_EVENT_CATEGORY + "= '" + uni + "'";
+                break;
+            case "false true false true":
+                result = result + " WHERE " + COLUMN_EVENT_CATEGORY + "= '" + uni + "' OR " + COLUMN_EVENT_CATEGORY + "= '" + holidays + "'";
+                break;
+            case "false true true false":
+                result = result + " WHERE " + COLUMN_EVENT_CATEGORY + "= '" + uni + "' OR " + COLUMN_EVENT_CATEGORY + "= '" + isc + "'";
+                break;
+            case "false true true true":
+                result = result + " WHERE " + COLUMN_EVENT_CATEGORY + "= '" + uni + "' OR " + COLUMN_EVENT_CATEGORY + "= '" + isc + "' OR " + COLUMN_EVENT_CATEGORY + "= '" + holidays + "'";
+                break;
+            case "true false false false":
+                result = result + " WHERE " + COLUMN_EVENT_CATEGORY + "= '" + fhws + "'";
+                break;
+            case "true false false true":
+                result = result + " WHERE " + COLUMN_EVENT_CATEGORY + "= '" + fhws + "' OR " + COLUMN_EVENT_CATEGORY + "= '" + holidays + "'";
+                break;
+            case "true false true false":
+                result = result + " WHERE " + COLUMN_EVENT_CATEGORY + "= '" + fhws + "' OR " + COLUMN_EVENT_CATEGORY + "= '" + isc + "'";
+                break;
+            case "true false true true":
+                result = result + " WHERE " + COLUMN_EVENT_CATEGORY + "= '" + fhws + "' OR " + COLUMN_EVENT_CATEGORY + "= '" + isc + "' OR " + COLUMN_EVENT_CATEGORY + "= '" + holidays + "'";
+                break;
+            case "true true false false":
+                result = result + " WHERE " + COLUMN_EVENT_CATEGORY + "= '" + fhws + "' OR " + COLUMN_EVENT_CATEGORY + "= '" + uni + "'";
+                break;
+            case "true true false true":
+                result = result + " WHERE " + COLUMN_EVENT_CATEGORY + "= '" + fhws + "' OR " + COLUMN_EVENT_CATEGORY + "= '" + uni + "' OR " + COLUMN_EVENT_CATEGORY + "= '" + holidays + "'";
+                break;
+            case "true true true false":
+                result = result + " WHERE " + COLUMN_EVENT_CATEGORY + "= '" + fhws + "' OR " + COLUMN_EVENT_CATEGORY + "= '" + uni + "' OR " + COLUMN_EVENT_CATEGORY + "= '" + isc + "'";
+                break;
+            case "true true true true":
+                break;
+            default:
+                break;
+        }
+        return result;
     }
 }
