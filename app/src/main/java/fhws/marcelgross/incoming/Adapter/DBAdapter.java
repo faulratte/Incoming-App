@@ -331,30 +331,42 @@ public class DBAdapter extends SQLiteOpenHelper {
     }
     public ArrayList<EventsObject> getAllEvents(boolean[] checkBoxen){
         ArrayList<EventsObject> events = new ArrayList<>();
-        String query =returnEventSqlStatement(checkBoxen);
-        Log.d("statement", query);
-        SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery(query, null);
-        if (cursor.moveToFirst()){
-            do {
-                EventsObject event = new EventsObject();
-                event.setId(cursor.getLong(0));
-                event.setTitle(cursor.getString(1));
-                event.setText(cursor.getString(2));
-                event.setTermin(cursor.getString(3));
-                event.setTime(cursor.getString(4));
-                event.setCategory(cursor.getString(5));
-                event.setFavorite(cursor.getString(6));
-                event.setLocation(cursor.getString(7));
-                event.setContactperson(cursor.getString(8));
-                event.setContactdata(cursor.getString(9));
-                event.setCreated(cursor.getString(10));
-                events.add(event);
-            } while (cursor.moveToNext());
+        String[] categoryArray = new String[]{context.getResources().getString(R.string.fhws), context.getResources().getString(R.string.uni), context.getResources().getString(R.string.isc), context.getResources().getString(R.string.holiday)};
+        boolean completeFalse = true;
+        for (boolean c : checkBoxen){
+            if (c == true)
+                completeFalse = false;
         }
-        cursor.close();
-        db.close();
-        Log.d("return events", String.valueOf(events.size()));
+
+        if (!completeFalse){
+            String query =getCategorizedSqlStatement(checkBoxen, categoryArray, TABLE_EVENT, COLUMN_EVENT_CATEGORY);
+            Log.d("statement", query);
+            SQLiteDatabase db = this.getWritableDatabase();
+            Cursor cursor = db.rawQuery(query, null);
+            if (cursor.moveToFirst()){
+                do {
+                    EventsObject event = new EventsObject();
+                    event.setId(cursor.getLong(0));
+                    event.setTitle(cursor.getString(1));
+                    event.setText(cursor.getString(2));
+                    event.setTermin(cursor.getString(3));
+                    event.setTime(cursor.getString(4));
+                    event.setCategory(cursor.getString(5));
+                    event.setFavorite(cursor.getString(6));
+                    event.setLocation(cursor.getString(7));
+                    event.setContactperson(cursor.getString(8));
+                    event.setContactdata(cursor.getString(9));
+                    event.setCreated(cursor.getString(10));
+                    events.add(event);
+                } while (cursor.moveToNext());
+            }
+            cursor.close();
+            db.close();
+            Log.d("return events", String.valueOf(events.size()));
+        }
+
+
+
         return events;
     }
     public ArrayList<LinksObject> getAllLinks(){
@@ -498,64 +510,40 @@ public class DBAdapter extends SQLiteOpenHelper {
     }
 
 
-    public String returnEventSqlStatement(boolean[] checkboxen){
-        String fhws = context.getResources().getString(R.string.fhws);
-        String uni = context.getResources().getString(R.string.uni);
-        String isc = context.getResources().getString(R.string.isc);
-        String holidays = context.getResources().getString(R.string.holiday);
-        String result = "SELECT * FROM " + TABLE_EVENT;
+    private static String getCategorizedSqlStatement(boolean[] checkboxen, String[] category, String tableName, String columnName){
+        {
+            String result = "";
 
-        String temp = String.valueOf(checkboxen[0]+" "+checkboxen[1]+" "+checkboxen[2]+" "+checkboxen[3]);
-        switch (temp){
-            case "false false false false":
-                break;
-            case "false false false true":
-                result = result + " WHERE " + COLUMN_EVENT_CATEGORY + "= '" + holidays + "'";
-                break;
-            case "false false true false":
-                result = result + " WHERE " + COLUMN_EVENT_CATEGORY + "= '" + isc + "'";
-                break;
-            case "false false true true":
-                result = result + " WHERE " + COLUMN_EVENT_CATEGORY + "= '" + holidays + "' OR " + COLUMN_EVENT_CATEGORY + "= '" + isc + "'";
-                break;
-            case "false true false false":
-                result = result + " WHERE " + COLUMN_EVENT_CATEGORY + "= '" + uni + "'";
-                break;
-            case "false true false true":
-                result = result + " WHERE " + COLUMN_EVENT_CATEGORY + "= '" + uni + "' OR " + COLUMN_EVENT_CATEGORY + "= '" + holidays + "'";
-                break;
-            case "false true true false":
-                result = result + " WHERE " + COLUMN_EVENT_CATEGORY + "= '" + uni + "' OR " + COLUMN_EVENT_CATEGORY + "= '" + isc + "'";
-                break;
-            case "false true true true":
-                result = result + " WHERE " + COLUMN_EVENT_CATEGORY + "= '" + uni + "' OR " + COLUMN_EVENT_CATEGORY + "= '" + isc + "' OR " + COLUMN_EVENT_CATEGORY + "= '" + holidays + "'";
-                break;
-            case "true false false false":
-                result = result + " WHERE " + COLUMN_EVENT_CATEGORY + "= '" + fhws + "'";
-                break;
-            case "true false false true":
-                result = result + " WHERE " + COLUMN_EVENT_CATEGORY + "= '" + fhws + "' OR " + COLUMN_EVENT_CATEGORY + "= '" + holidays + "'";
-                break;
-            case "true false true false":
-                result = result + " WHERE " + COLUMN_EVENT_CATEGORY + "= '" + fhws + "' OR " + COLUMN_EVENT_CATEGORY + "= '" + isc + "'";
-                break;
-            case "true false true true":
-                result = result + " WHERE " + COLUMN_EVENT_CATEGORY + "= '" + fhws + "' OR " + COLUMN_EVENT_CATEGORY + "= '" + isc + "' OR " + COLUMN_EVENT_CATEGORY + "= '" + holidays + "'";
-                break;
-            case "true true false false":
-                result = result + " WHERE " + COLUMN_EVENT_CATEGORY + "= '" + fhws + "' OR " + COLUMN_EVENT_CATEGORY + "= '" + uni + "'";
-                break;
-            case "true true false true":
-                result = result + " WHERE " + COLUMN_EVENT_CATEGORY + "= '" + fhws + "' OR " + COLUMN_EVENT_CATEGORY + "= '" + uni + "' OR " + COLUMN_EVENT_CATEGORY + "= '" + holidays + "'";
-                break;
-            case "true true true false":
-                result = result + " WHERE " + COLUMN_EVENT_CATEGORY + "= '" + fhws + "' OR " + COLUMN_EVENT_CATEGORY + "= '" + uni + "' OR " + COLUMN_EVENT_CATEGORY + "= '" + isc + "'";
-                break;
-            case "true true true true":
-                break;
-            default:
-                break;
+            boolean completeFalse = true;
+            for (boolean c : checkboxen){
+                if (c == true)
+                    completeFalse = false;
+            }
+
+
+            if (!completeFalse){
+                for (int i = 0; i < checkboxen.length; i++) {
+                    if (checkboxen[i])
+                    {
+                        String next = category[i];
+
+                        if (result.equals(""))
+                        {
+                            result += " WHERE " + columnName + " = '" + next + "'";
+                        }
+                        else
+                        {
+                            result += " OR " + columnName + " = '" + next + "'";
+                        }
+                    }
+                }
+
+                result = "SELECT * FROM " + tableName + result;
+            }
+            else
+                result = null;
+
+            return result;
         }
-        return result;
     }
 }

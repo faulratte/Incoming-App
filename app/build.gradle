@@ -27,5 +27,5 @@ dependencies {
     compile 'com.android.support:cardview-v7:22.1.1'
     compile 'com.android.support:recyclerview-v7:22.1.1'
     compile 'com.owlike:genson:1.3'
-    compile 'commons-io:commons-io:2.4'
+    compile 'com.mcxiaoke.volley:library:1.0.+'
 }
