@@ -340,7 +340,6 @@ public class DBAdapter extends SQLiteOpenHelper {
 
         if (!completeFalse){
             String query =getCategorizedSqlStatement(checkBoxen, categoryArray, TABLE_EVENT, COLUMN_EVENT_CATEGORY);
-            Log.d("statement", query);
             SQLiteDatabase db = this.getWritableDatabase();
             Cursor cursor = db.rawQuery(query, null);
             if (cursor.moveToFirst()){

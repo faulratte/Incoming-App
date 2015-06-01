@@ -47,7 +47,7 @@ public class EventsFragment extends Fragment {
     private DBAdapter db;
     private View view;
     private boolean[] checkedBoxes = new boolean[4];
-    private final String prefName = "event_box";
+    private final String PREFNAME = "event_box";
 
     private ArrayList<EventsObject> objects;
 
@@ -75,10 +75,7 @@ public class EventsFragment extends Fragment {
     }
 
     public void setUpView(ArrayList<EventsObject> eventsObjects){
-        if (eventsObjects.isEmpty()){
-            mProgressBar.setVisibility(View.VISIBLE);
-        } else {
-            mProgressBar.setVisibility(View.GONE);
+
             RecyclerView mRecyclerView = (RecyclerView) view.findViewById(R.id.events_list);
 
             LinearLayoutManager llm = new LinearLayoutManager(getActivity());
@@ -88,7 +85,6 @@ public class EventsFragment extends Fragment {
             EventsAdapter mEventsAdapter = new EventsAdapter(eventsObjects, R.layout.events_card, getActivity());
             mRecyclerView.setAdapter(mEventsAdapter);
             mEventsAdapter.notifyDataSetChanged();
-        }
     }
 
     private void loadData(){
@@ -174,7 +170,7 @@ public class EventsFragment extends Fragment {
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
         for (int i = 0; i < checkedBoxes.length; i++){
-            editor.putBoolean(prefName+i, checkedBoxes[i]);
+            editor.putBoolean(PREFNAME +i, checkedBoxes[i]);
         }
 
         editor.apply();
@@ -184,7 +180,7 @@ public class EventsFragment extends Fragment {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
         for (int i = 0; i < checkedBoxes.length; i++){
-            checkedBoxes[i] = sharedPreferences.getBoolean(prefName+i, true);
+            checkedBoxes[i] = sharedPreferences.getBoolean(PREFNAME +i, true);
         }
     }
 }

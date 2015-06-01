@@ -29,6 +29,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 
         AppSectionsAdapter mAppSectionsPagerAdapter = new AppSectionsAdapter(getFragmentManager());
 
+
         actionBar = getSupportActionBar();
 
         actionBar.setHomeButtonEnabled(false);

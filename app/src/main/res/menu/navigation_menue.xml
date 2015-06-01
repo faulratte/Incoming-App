@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group
+        android:checkableBehavior="all"
+        >
+        <item android:id="@+id/action_libary"
+            android:title="@string/libary"
+            />
+
+        <item android:id="@+id/action_eatDrink"
+            android:title="@string/eatDrink"
+            />
+
+        <item android:id="@+id/action_dormitory"
+            android:title="@string/dormitory"
+            />
+
+        <item android:id="@+id/action_fhws_building"
+            android:title="@string/fhws_building"
+            />
+    </group>
+</menu>

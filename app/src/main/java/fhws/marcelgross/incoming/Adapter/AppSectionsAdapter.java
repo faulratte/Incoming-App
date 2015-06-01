@@ -2,13 +2,14 @@ package fhws.marcelgross.incoming.Adapter;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.os.Bundle;
 import android.support.v13.app.FragmentPagerAdapter;
 
+import java.util.ArrayList;
+
 import fhws.marcelgross.incoming.Fragments.ContactFragment;
-import fhws.marcelgross.incoming.Fragments.DummySectionFragment;
 import fhws.marcelgross.incoming.Fragments.EventsFragment;
 import fhws.marcelgross.incoming.Fragments.LinksFragment;
+import fhws.marcelgross.incoming.Fragments.NavigationFragment;
 import fhws.marcelgross.incoming.Fragments.NewsFragment;
 import fhws.marcelgross.incoming.R;
 
@@ -18,40 +19,45 @@ import fhws.marcelgross.incoming.R;
  */
 public class AppSectionsAdapter extends FragmentPagerAdapter {
 
+    private ArrayList<Fragment> fragments;
+
     public AppSectionsAdapter(FragmentManager fm) {
         super(fm);
+        fragments = new ArrayList<>();
+        fragments.add(new NewsFragment());
+        fragments.add(new EventsFragment());
+        fragments.add(new NavigationFragment());
+        fragments.add(new ContactFragment());
+        fragments.add(new LinksFragment());
+
     }
 
-    @Override
+   /* @Override
     public Fragment getItem(int i) {
         switch (i) {
             case 0:
                 return new NewsFragment();
             case 1:
                 return new EventsFragment();
+            case 2:
+                return new NavigationFragment();
             case 3:
                 return new ContactFragment();
             case 4:
                 return new LinksFragment();
-
             default:
-                Fragment fragment = new DummySectionFragment();
-                Bundle args = new Bundle();
-                args.putInt(DummySectionFragment.ARG_SECTION_NUMBER, i + 1);
-                fragment.setArguments(args);
-                return fragment;
+                return null;
         }
-    }
+    }*/
 
+    @Override
+    public Fragment getItem(int i) {
+       return fragments.get(i);
+    }
     //number of tabs
     @Override
     public int getCount() {
-        return 5;
-    }
-
-    @Override
-    public CharSequence getPageTitle(int position) {
-        return "Section " + (position + 1);
+        return fragments.size();
     }
 
     public int getIcon(int position){
@@ -73,7 +79,7 @@ public class AppSectionsAdapter extends FragmentPagerAdapter {
                 icon = R.mipmap.ic_tab_links;
                 break;
             default:
-                icon = -1;
+                icon = R.mipmap.ic_tab_navigation;
                 break;
         }
         return icon;
