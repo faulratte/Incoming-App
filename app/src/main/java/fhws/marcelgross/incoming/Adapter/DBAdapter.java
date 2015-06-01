@@ -17,9 +17,7 @@ import fhws.marcelgross.incoming.Objects.NavigationObject;
 import fhws.marcelgross.incoming.Objects.NewsObject;
 import fhws.marcelgross.incoming.R;
 
-/**
- * Created by Marcel on 28.04.2015.
- */
+
 public class DBAdapter extends SQLiteOpenHelper {
 
     private Context context;
@@ -334,7 +332,7 @@ public class DBAdapter extends SQLiteOpenHelper {
         String[] categoryArray = new String[]{context.getResources().getString(R.string.fhws), context.getResources().getString(R.string.uni), context.getResources().getString(R.string.isc), context.getResources().getString(R.string.holiday)};
         boolean completeFalse = true;
         for (boolean c : checkBoxen){
-            if (c == true)
+            if (c)
                 completeFalse = false;
         }
 
@@ -388,34 +386,43 @@ public class DBAdapter extends SQLiteOpenHelper {
         Log.d("return links", String.valueOf(links.size()));
         return links;
     }
-    public ArrayList<NavigationObject> getAllPois(){
+    public ArrayList<NavigationObject> getAllPois(boolean[] checkBoxen){
         ArrayList<NavigationObject> pois = new ArrayList<>();
-        String query = "SELECT * FROM " + TABLE_NAVIGATION;
-        SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery(query, null);
-        if (cursor.moveToFirst()){
-            do {
-                NavigationObject poi = new NavigationObject();
-                poi.setId(cursor.getLong(0));
-                poi.setFavorite(cursor.getString(1));
-                poi.setCategory(cursor.getString(2));
-                poi.setName(cursor.getString(3));
-                poi.setStreet(cursor.getString(4));
-                poi.setHouse_NR(cursor.getInt(5));
-                poi.setZipcode(cursor.getInt(6));
-                poi.setCity(cursor.getString(7));
-                poi.setPhone(cursor.getString(8));
-                poi.setContactperson(cursor.getString(9));
-                poi.setOeffnungszeiten(cursor.getString(10));
-                poi.setLongitude(cursor.getDouble(11));
-                poi.setLatitude(cursor.getDouble(12));
-                poi.setPic(cursor.getString(13));
-                pois.add(poi);
-            } while (cursor.moveToNext());
+        String[] categoryArray = new String[]{context.getResources().getString(R.string.libary), context.getResources().getString(R.string.eatDrink), context.getResources().getString(R.string.dormitory), context.getResources().getString(R.string.fhws_building)};
+        boolean completeFalse = true;
+        for (boolean c : checkBoxen){
+            if (c)
+                completeFalse = false;
         }
-        cursor.close();
-        db.close();
-        Log.d("return pois", String.valueOf(pois.size()));
+        if (!completeFalse){
+            String query = getCategorizedSqlStatement(checkBoxen, categoryArray, TABLE_NAVIGATION, COLUMN_NAVIGATION_CATEGORY);
+            SQLiteDatabase db = this.getWritableDatabase();
+            Cursor cursor = db.rawQuery(query, null);
+            if (cursor.moveToFirst()){
+                do {
+                    NavigationObject poi = new NavigationObject();
+                    poi.setId(cursor.getLong(0));
+                    poi.setFavorite(cursor.getString(1));
+                    poi.setCategory(cursor.getString(2));
+                    poi.setName(cursor.getString(3));
+                    poi.setStreet(cursor.getString(4));
+                    poi.setHouse_NR(cursor.getInt(5));
+                    poi.setZipcode(cursor.getInt(6));
+                    poi.setCity(cursor.getString(7));
+                    poi.setPhone(cursor.getString(8));
+                    poi.setContactperson(cursor.getString(9));
+                    poi.setOeffnungszeiten(cursor.getString(10));
+                    poi.setLongitude(cursor.getDouble(11));
+                    poi.setLatitude(cursor.getDouble(12));
+                    poi.setPic(cursor.getString(13));
+                    pois.add(poi);
+                } while (cursor.moveToNext());
+            }
+            cursor.close();
+            db.close();
+            Log.d("return pois", String.valueOf(pois.size()));
+        }
+
         return pois;
     }
     public ArrayList<NewsObject> getAllNews(){
@@ -502,6 +509,21 @@ public class DBAdapter extends SQLiteOpenHelper {
         Log.d("return contactIDs", String.valueOf(ids.size()));
         return ids;
     }
+    public ArrayList<Long> getAllPoiIDs(){
+        ArrayList<Long> ids = new ArrayList<>();
+        String query = "SELECT * FROM " + TABLE_NAVIGATION;
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+        if (cursor.moveToFirst()){
+            do {
+                ids.add(cursor.getLong(cursor.getColumnIndex(COLUMN_NAVIGATION_ID)));
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+        Log.d("return navigationIDs", String.valueOf(ids.size()));
+        return ids;
+    }
 
     public void deleteTable(String tableName){
         SQLiteDatabase db = this.getWritableDatabase();
@@ -515,7 +537,7 @@ public class DBAdapter extends SQLiteOpenHelper {
 
             boolean completeFalse = true;
             for (boolean c : checkboxen){
-                if (c == true)
+                if (c)
                     completeFalse = false;
             }
 

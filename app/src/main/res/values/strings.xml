@@ -35,6 +35,10 @@
 
     <string name="libary">Bibliotheken</string>
     <string name="eatDrink">Essen-Trinken</string>
-    <string name="dormitory">Wohnheim</string>
-    <string name="fhws_building">FHWS-Gebäude</string>
+    <string name="dormitory">Wohnheime</string>
+    <string name="fhws_building">FHWS Gebäude</string>
+
+    <string name="noGPS">GPS deaktiviert.\nMöchten Sie GPS jetzt aktivieren?</string>
+    <string name="yes">Ja</string>
+    <string name="no">Nein</string>
 </resources>

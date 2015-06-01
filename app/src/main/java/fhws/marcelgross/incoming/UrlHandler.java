@@ -9,4 +9,5 @@ public interface UrlHandler {
     String NEWSURL = "http://backend.applab.fhws.de:8080/incoming/api/news";
     String EVENTLINK = "http://backend.applab.fhws.de:8080/incoming/api/events";
     String CONTACTURL = "http://backend.applab.fhws.de:8080/incoming/api/person";
+    String NAVILINK = "http://backend.applab.fhws.de:8080/incoming/api/navi";
 }

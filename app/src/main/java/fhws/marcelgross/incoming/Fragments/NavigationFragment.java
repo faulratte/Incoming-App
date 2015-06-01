@@ -3,33 +3,50 @@ package fhws.marcelgross.incoming.Fragments;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.owlike.genson.GenericType;
+import com.owlike.genson.Genson;
 
+import org.json.JSONArray;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+import fhws.marcelgross.incoming.Adapter.DBAdapter;
+import fhws.marcelgross.incoming.Adapter.GPSTracker;
+import fhws.marcelgross.incoming.Objects.NavigationObject;
 import fhws.marcelgross.incoming.R;
+import fhws.marcelgross.incoming.UrlHandler;
+import fhws.marcelgross.incoming.Volley.AppController;
 
-/**
- * A simple {@link Fragment} subclass.
- */
+
 public class NavigationFragment extends MapFragment {
 
     private GoogleMap map;
     private boolean[] checkBoxes = new boolean[4];
     private final String PREFNAME = "poi_box";
 
-    private static final LatLng HAMBURG = new LatLng(53.558, 9.927);
-    private static final LatLng KIEl = new LatLng(53.551, 9.993);
+    private DBAdapter db;
+    private boolean alertshowed = false;
+    private ArrayList<NavigationObject> objects;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -42,12 +59,48 @@ public class NavigationFragment extends MapFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        db = new DBAdapter(getActivity());
         map = getMap();
-        Marker hamburg = map.addMarker(new MarkerOptions().position(HAMBURG).title("Hamburg"));
-        Marker kiel = map.addMarker(new MarkerOptions().position(KIEl).title("Kiel"));
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(HAMBURG, 15));
-        map.animateCamera(CameraUpdateFactory.zoomTo(10), 2000, null);
+        loadData();
+        map.setMyLocationEnabled(true);
+
+
+
+        GPSTracker gps = new GPSTracker(getActivity());
+
+        if (gps.canGetLocation()){
+            map.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(gps.getLatitude(), gps.getLongitude())));
+            map.animateCamera(CameraUpdateFactory.zoomTo(14), 2000, null);
+        } else {
+            if (!alertshowed){
+                gps.showSettingsAlert();
+                alertshowed = true;
+            }
+        }
+
+
+       /*
+        locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+        try {
+
+            Criteria criteria = new Criteria();
+            String provider = locationManager.getBestProvider(criteria, true);
+            Location myLocation = locationManager.getLastKnownLocation(provider);
+            map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+
+
+            LatLng latLng = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
+
+            map.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+            map.animateCamera(CameraUpdateFactory.zoomTo(14), 2000, null);
+
+        } catch (NullPointerException e) {
+            Log.d("Nullpointer", e.getMessage());
+        }*/
+
+        setMarkers(db.getAllPois(checkBoxes));
     }
+
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -58,11 +111,11 @@ public class NavigationFragment extends MapFragment {
         menu.getItem(3).setChecked(checkBoxes[3]);
     }
 
-    private void savePreferences(){
+    private void savePreferences() {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
-        for (int i = 0; i < checkBoxes.length; i++){
+        for (int i = 0; i < checkBoxes.length; i++) {
             editor.putBoolean(PREFNAME + i, checkBoxes[i]);
         }
         editor.apply();
@@ -72,7 +125,7 @@ public class NavigationFragment extends MapFragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         item.setChecked(!item.isChecked());
 
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.action_libary:
                 checkBoxes[0] = item.isChecked();
                 break;
@@ -88,16 +141,74 @@ public class NavigationFragment extends MapFragment {
             default:
                 break;
         }
-
         savePreferences();
+        setMarkers(db.getAllPois(checkBoxes));
         return super.onOptionsItemSelected(item);
     }
 
-    private void loadSavedPreferences(){
+    private void loadSavedPreferences() {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
-        for (int i = 0; i < checkBoxes.length; i++){
+        for (int i = 0; i < checkBoxes.length; i++) {
             checkBoxes[i] = sharedPreferences.getBoolean(PREFNAME + i, true);
+        }
+    }
+
+    private void loadData() {
+        final Genson genson = new Genson();
+        JsonArrayRequest req = new JsonArrayRequest(UrlHandler.NAVILINK,
+                new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        objects = genson.deserialize(response.toString(), new GenericType<ArrayList<NavigationObject>>() {
+                        });
+                        checkViewReaload(objects);
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d("result", "Error: " + error.getMessage());
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<>();
+                headers.put("Content-Type", "application/json");
+                return headers;
+            }
+
+        };
+        AppController.getInstance(getActivity()).addToRequestQueue(req, "links_request");
+    }
+
+    private void checkViewReaload(ArrayList<NavigationObject> naviObjects) {
+        int counter = 0;
+        ArrayList<Long> ids = db.getAllPoiIDs();
+        for (int i = 0; i < naviObjects.size(); i++) {
+            if (!ids.contains(naviObjects.get(i).getId()))
+                ++counter;
+        }
+        db.savePois(naviObjects);
+        if (counter > 0) {
+            setMarkers(db.getAllPois(checkBoxes));
+        }
+    }
+
+    public void setMarkers(ArrayList<NavigationObject> navigationObjects) {
+        map.clear();
+        for (NavigationObject current : navigationObjects) {
+            int drawable;
+            if (current.getCategory().equals(getResources().getString(R.string.fhws_building))) {
+                drawable = R.mipmap.ic_map_uni;
+            } else if (current.getCategory().equals(getResources().getString(R.string.dormitory))) {
+                drawable = R.mipmap.ic_map_dorm;
+            } else if (current.getCategory().equals(getResources().getString(R.string.eatDrink))) {
+                drawable = R.mipmap.ic_map_cafeteria;
+            } else {
+                drawable = R.mipmap.ic_map_lib;
+            }
+            LatLng tempLatLng = new LatLng(current.getLatitude(), current.getLongitude());
+            Marker temp = map.addMarker(new MarkerOptions().position(tempLatLng).title(current.getName()).icon(BitmapDescriptorFactory.fromResource(drawable)).snippet(current.getContactperson()));
         }
     }
 }

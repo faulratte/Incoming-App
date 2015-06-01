@@ -32,29 +32,13 @@ public class AppSectionsAdapter extends FragmentPagerAdapter {
 
     }
 
-   /* @Override
-    public Fragment getItem(int i) {
-        switch (i) {
-            case 0:
-                return new NewsFragment();
-            case 1:
-                return new EventsFragment();
-            case 2:
-                return new NavigationFragment();
-            case 3:
-                return new ContactFragment();
-            case 4:
-                return new LinksFragment();
-            default:
-                return null;
-        }
-    }*/
-
     @Override
     public Fragment getItem(int i) {
-       return fragments.get(i);
+        return fragments.get(i);
     }
-    //number of tabs
+
+
+
     @Override
     public int getCount() {
         return fragments.size();
@@ -79,7 +63,7 @@ public class AppSectionsAdapter extends FragmentPagerAdapter {
                 icon = R.mipmap.ic_tab_links;
                 break;
             default:
-                icon = R.mipmap.ic_tab_navigation;
+                icon = R.mipmap.ic_launcher;
                 break;
         }
         return icon;
