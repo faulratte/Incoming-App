@@ -1,14 +1,14 @@
 package fhws.marcelgross.incoming;
 
 import android.app.Dialog;
-import android.content.Context;
+import android.content.IntentFilter;
 import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -18,28 +18,22 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 
 import fhws.marcelgross.incoming.Adapter.AppSectionsAdapter;
 import fhws.marcelgross.incoming.Adapter.GPSTracker;
+import fhws.marcelgross.incoming.Adapter.NetworkChangeReceiver;
 
 public class MainActivity extends ActionBarActivity implements ActionBar.TabListener {
 
     private ViewPager mViewPager;
     private ActionBar actionBar;
-    public static boolean isConnected;
     private static boolean alertshowed = false;
+    private NetworkChangeReceiver networkChangeReceiver = new NetworkChangeReceiver();
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        isConnected = isNetworkAvailable();
+        registerNetworkChangeReceiver();
+        checkPlayServices();
 
-        int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getBaseContext());
-
-        if (status != ConnectionResult.SUCCESS)
-        {
-            int requestCode = 10;
-            Dialog dialog = GooglePlayServicesUtil.getErrorDialog(status, this, requestCode);
-            dialog.show();
-        }
 
         AppSectionsAdapter mAppSectionsPagerAdapter = new AppSectionsAdapter(getFragmentManager());
 
@@ -79,9 +73,19 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        try {
+            getBaseContext().unregisterReceiver(this.networkChangeReceiver);
+        } catch (IllegalArgumentException e){
+            Log.d("unregisterReceiver", e.getMessage());
+        }
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
-        if (!isConnected)
+        if (!NetworkChangeReceiver.connection)
         {
             menu.add(Menu.NONE, R.string.noSignal, Menu.NONE, R.string.noSignal).setIcon(R.mipmap.ic_no_signal)
                     .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
@@ -115,10 +119,29 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         mViewPager.setCurrentItem(tab.getPosition());
     }
 
-    private boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    private void checkPlayServices(){
+        int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getBaseContext());
+
+        if (status != ConnectionResult.SUCCESS)
+        {
+            int requestCode = 10;
+            Dialog dialog = GooglePlayServicesUtil.getErrorDialog(status, this, requestCode);
+            dialog.show();
+        }
     }
+
+    private void registerNetworkChangeReceiver(){
+
+        IntentFilter networkFilter = new IntentFilter();
+        networkFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+        getBaseContext().registerReceiver(networkChangeReceiver, networkFilter);
+
+
+      /*  IntentFilter networkFilter = new IntentFilter();
+        networkFilter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
+        networkFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+        getBaseContext().registerReceiver(networkChangeReceiver, networkFilter);
+*/
+    }
+
 }

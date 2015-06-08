@@ -32,7 +32,7 @@ import java.util.Map;
 
 import fhws.marcelgross.incoming.Adapter.DBAdapter;
 import fhws.marcelgross.incoming.Adapter.EventsAdapter;
-import fhws.marcelgross.incoming.MainActivity;
+import fhws.marcelgross.incoming.Adapter.NetworkChangeReceiver;
 import fhws.marcelgross.incoming.Objects.EventsObject;
 import fhws.marcelgross.incoming.R;
 import fhws.marcelgross.incoming.UrlHandler;
@@ -49,8 +49,6 @@ public class EventsFragment extends Fragment {
     private boolean[] checkedBoxes = new boolean[4];
     private final String PREFNAME = "event_box";
 
-    private ArrayList<EventsObject> objects;
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -66,7 +64,7 @@ public class EventsFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_events, container, false);
         db = new DBAdapter(getActivity());
         mProgressBar = (ProgressBar) view.findViewById(R.id.events_progressBar);
-        if (MainActivity.isConnected){
+        if (NetworkChangeReceiver.connection){
             loadData();
         }
         setUpView(db.getAllEvents(checkedBoxes));
@@ -93,6 +91,7 @@ public class EventsFragment extends Fragment {
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
+                        ArrayList<EventsObject> objects;
                         objects = genson.deserialize(response.toString(), new GenericType<ArrayList<EventsObject>>() {});
                         checkViewReaload(objects);
                     }

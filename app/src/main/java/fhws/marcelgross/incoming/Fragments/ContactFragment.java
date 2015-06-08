@@ -27,7 +27,7 @@ import java.util.Map;
 
 import fhws.marcelgross.incoming.Adapter.ContactAdapter;
 import fhws.marcelgross.incoming.Adapter.DBAdapter;
-import fhws.marcelgross.incoming.MainActivity;
+import fhws.marcelgross.incoming.Adapter.NetworkChangeReceiver;
 import fhws.marcelgross.incoming.Objects.ContactObject;
 import fhws.marcelgross.incoming.R;
 import fhws.marcelgross.incoming.UrlHandler;
@@ -43,15 +43,13 @@ public class ContactFragment extends Fragment {
     private DBAdapter db;
     private View view;
     
-    private ArrayList<ContactObject> objects;
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_contact, container, false);
         db = new DBAdapter(getActivity());
         mProgressBar = (ProgressBar) view.findViewById(R.id.contacts_progressBar);
-        if (MainActivity.isConnected){
+        if ( NetworkChangeReceiver.connection){
             loadData();
         }
         setUpView(db.getAllContacts());
@@ -82,6 +80,7 @@ public class ContactFragment extends Fragment {
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
+                        ArrayList<ContactObject> objects;
                         objects = genson.deserialize(response.toString(), new GenericType<ArrayList<ContactObject>>() {});
                         checkViewReload(objects);
                     }

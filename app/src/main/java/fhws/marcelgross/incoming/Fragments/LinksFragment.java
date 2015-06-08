@@ -27,7 +27,7 @@ import java.util.Map;
 
 import fhws.marcelgross.incoming.Adapter.DBAdapter;
 import fhws.marcelgross.incoming.Adapter.LinkAdapter;
-import fhws.marcelgross.incoming.MainActivity;
+import fhws.marcelgross.incoming.Adapter.NetworkChangeReceiver;
 import fhws.marcelgross.incoming.Objects.LinksObject;
 import fhws.marcelgross.incoming.R;
 import fhws.marcelgross.incoming.UrlHandler;
@@ -42,15 +42,13 @@ public class LinksFragment extends Fragment {
     private DBAdapter db;
     private View view;
 
-    private ArrayList<LinksObject> objects;
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_links, container, false);
         mProgressBar = (ProgressBar) view.findViewById(R.id.links_progressBar);
         db = new DBAdapter(getActivity());
-        if (MainActivity.isConnected){
+        if (NetworkChangeReceiver.connection){
             loadData();
         }
         setUpView(db.getAllLinks());
@@ -82,6 +80,7 @@ public class LinksFragment extends Fragment {
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
+                        ArrayList<LinksObject> objects;
                         objects = genson.deserialize(response.toString(), new GenericType<ArrayList<LinksObject>>() {});
                         checkViewReaload(objects);
                     }

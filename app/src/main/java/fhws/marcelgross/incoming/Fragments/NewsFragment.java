@@ -26,8 +26,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import fhws.marcelgross.incoming.Adapter.DBAdapter;
+import fhws.marcelgross.incoming.Adapter.NetworkChangeReceiver;
 import fhws.marcelgross.incoming.Adapter.NewsAdapter;
-import fhws.marcelgross.incoming.MainActivity;
 import fhws.marcelgross.incoming.Objects.NewsObject;
 import fhws.marcelgross.incoming.R;
 import fhws.marcelgross.incoming.UrlHandler;
@@ -43,8 +43,6 @@ public class NewsFragment extends Fragment {
     private DBAdapter db;
     private View view;
 
-    private ArrayList<NewsObject> objects;
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -52,7 +50,7 @@ public class NewsFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_news, container, false);
         db = new DBAdapter(getActivity());
         mProgressBar = (ProgressBar) view.findViewById(R.id.news_progressBar);
-        if (MainActivity.isConnected){
+        if ( NetworkChangeReceiver.connection){
             loadData();
         }
         setUpView(db.getAllNews());
@@ -84,6 +82,7 @@ public class NewsFragment extends Fragment {
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
+                        ArrayList<NewsObject> objects;
                         objects = genson.deserialize(response.toString(), new GenericType<ArrayList<NewsObject>>() {});
                         checkViewReaload(objects);
                     }

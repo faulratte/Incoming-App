@@ -37,6 +37,7 @@ import java.util.Map;
 
 import fhws.marcelgross.incoming.Adapter.DBAdapter;
 import fhws.marcelgross.incoming.Adapter.GPSTracker;
+import fhws.marcelgross.incoming.Adapter.NetworkChangeReceiver;
 import fhws.marcelgross.incoming.Objects.NavigationObject;
 import fhws.marcelgross.incoming.R;
 import fhws.marcelgross.incoming.UrlHandler;
@@ -50,7 +51,6 @@ public class NavigationFragment extends MapFragment {
     private final String PREFNAME = "poi_box";
 
     private DBAdapter db;
-    private ArrayList<NavigationObject> objects;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -65,7 +65,9 @@ public class NavigationFragment extends MapFragment {
         super.onViewCreated(view, savedInstanceState);
         db = new DBAdapter(getActivity());
         map = getMap();
-        loadData();
+        if ( NetworkChangeReceiver.connection){
+            loadData();
+        }
         map.setMyLocationEnabled(true);
 
 
@@ -138,8 +140,8 @@ public class NavigationFragment extends MapFragment {
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
-                        objects = genson.deserialize(response.toString(), new GenericType<ArrayList<NavigationObject>>() {
-                        });
+                        ArrayList<NavigationObject> objects;
+                        objects =  genson.deserialize(response.toString(), new GenericType<ArrayList<NavigationObject>>() {});
                         checkViewReaload(objects);
                     }
                 }, new Response.ErrorListener() {
