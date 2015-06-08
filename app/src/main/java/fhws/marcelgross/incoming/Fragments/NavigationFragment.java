@@ -1,13 +1,18 @@
 package fhws.marcelgross.incoming.Fragments;
 
 
+import android.app.Dialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Response;
@@ -45,7 +50,6 @@ public class NavigationFragment extends MapFragment {
     private final String PREFNAME = "poi_box";
 
     private DBAdapter db;
-    private boolean alertshowed = false;
     private ArrayList<NavigationObject> objects;
 
     @Override
@@ -71,33 +75,7 @@ public class NavigationFragment extends MapFragment {
         if (gps.canGetLocation()){
             map.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(gps.getLatitude(), gps.getLongitude())));
             map.animateCamera(CameraUpdateFactory.zoomTo(14), 2000, null);
-        } else {
-            if (!alertshowed){
-                gps.showSettingsAlert();
-                alertshowed = true;
-            }
         }
-
-
-       /*
-        locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-        try {
-
-            Criteria criteria = new Criteria();
-            String provider = locationManager.getBestProvider(criteria, true);
-            Location myLocation = locationManager.getLastKnownLocation(provider);
-            map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-
-
-            LatLng latLng = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
-
-            map.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-            map.animateCamera(CameraUpdateFactory.zoomTo(14), 2000, null);
-
-        } catch (NullPointerException e) {
-            Log.d("Nullpointer", e.getMessage());
-        }*/
-
         setMarkers(db.getAllPois(checkBoxes));
     }
 
@@ -194,8 +172,19 @@ public class NavigationFragment extends MapFragment {
         }
     }
 
-    public void setMarkers(ArrayList<NavigationObject> navigationObjects) {
+    public void setMarkers(final ArrayList<NavigationObject> navigationObjects) {
         map.clear();
+
+        map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+
+                showDialog(navigationObjects, marker);
+
+                return true;
+            }
+        });
+
         for (NavigationObject current : navigationObjects) {
             int drawable;
             if (current.getCategory().equals(getResources().getString(R.string.fhws_building))) {
@@ -208,7 +197,48 @@ public class NavigationFragment extends MapFragment {
                 drawable = R.mipmap.ic_map_lib;
             }
             LatLng tempLatLng = new LatLng(current.getLatitude(), current.getLongitude());
-            Marker temp = map.addMarker(new MarkerOptions().position(tempLatLng).title(current.getName()).icon(BitmapDescriptorFactory.fromResource(drawable)).snippet(current.getContactperson()));
+            Marker temp = map.addMarker(
+                    new MarkerOptions().position(tempLatLng)
+                            .title(current.getName())
+                            .icon(BitmapDescriptorFactory.fromResource(drawable)));
         }
     }
+
+    public int getArrayPosition(ArrayList<NavigationObject> navigationObjects, String marker){
+        int arrayPosition = -1;
+        for (int i = 0; i < navigationObjects.size(); i++) {
+            if (marker.equals(navigationObjects.get(i).getName()))
+                arrayPosition = i;
+        }
+        return arrayPosition;
+    }
+
+    public void showDialog(ArrayList<NavigationObject> navigationObjects, Marker marker){
+        int arrayPosition = getArrayPosition(navigationObjects, marker.getTitle());
+        final NavigationObject temp = navigationObjects.get(arrayPosition);
+
+        final Dialog dialog = new Dialog(getActivity());
+        dialog.setContentView(R.layout.marker);
+        dialog.setTitle(temp.getName());
+        TextView contact_person = (TextView) dialog.findViewById(R.id.marker_contactperson_tv);
+        TextView opening_hours = (TextView) dialog.findViewById(R.id.marker_openinghours_tv);
+        ImageButton call_btn = (ImageButton) dialog.findViewById(R.id.marker_phone_btn);
+        if (arrayPosition >= 0) {
+            contact_person.setText(String.valueOf(temp.getContactperson()));
+            opening_hours.setText(String.valueOf(temp.getOeffnungszeiten()));
+            call_btn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent i = new Intent(Intent.ACTION_DIAL);
+                    String p = "tel:" + temp.getPhone();
+                    i.setData(Uri.parse(p));
+                    getActivity().startActivity(i);
+                }
+            });
+        } else {
+            call_btn.setVisibility(View.GONE);
+        }
+        dialog.show();
+    }
+
 }
