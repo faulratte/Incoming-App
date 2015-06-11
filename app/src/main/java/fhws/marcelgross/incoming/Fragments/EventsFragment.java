@@ -64,7 +64,7 @@ public class EventsFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_events, container, false);
         db = new DBAdapter(getActivity());
         mProgressBar = (ProgressBar) view.findViewById(R.id.events_progressBar);
-        if (NetworkChangeReceiver.connection){
+        if (NetworkChangeReceiver.getInstance().isConnected){
             loadData();
         }
         setUpView(db.getAllEvents(checkedBoxes));

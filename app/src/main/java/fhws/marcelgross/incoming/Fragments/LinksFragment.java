@@ -48,7 +48,7 @@ public class LinksFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_links, container, false);
         mProgressBar = (ProgressBar) view.findViewById(R.id.links_progressBar);
         db = new DBAdapter(getActivity());
-        if (NetworkChangeReceiver.connection){
+        if (NetworkChangeReceiver.getInstance().isConnected){
             loadData();
         }
         setUpView(db.getAllLinks());

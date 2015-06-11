@@ -50,7 +50,7 @@ public class NewsFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_news, container, false);
         db = new DBAdapter(getActivity());
         mProgressBar = (ProgressBar) view.findViewById(R.id.news_progressBar);
-        if ( NetworkChangeReceiver.connection){
+        if ( NetworkChangeReceiver.getInstance().isConnected){
             loadData();
         }
         setUpView(db.getAllNews());

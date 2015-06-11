@@ -65,7 +65,7 @@ public class NavigationFragment extends MapFragment {
         super.onViewCreated(view, savedInstanceState);
         db = new DBAdapter(getActivity());
         map = getMap();
-        if ( NetworkChangeReceiver.connection){
+        if ( NetworkChangeReceiver.getInstance().isConnected){
             loadData();
         }
         map.setMyLocationEnabled(true);

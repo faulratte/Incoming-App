@@ -25,7 +25,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
     private ViewPager mViewPager;
     private ActionBar actionBar;
     private static boolean alertshowed = false;
-    private NetworkChangeReceiver networkChangeReceiver = new NetworkChangeReceiver();
+
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,7 +76,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
     protected void onPause() {
         super.onPause();
         try {
-            getBaseContext().unregisterReceiver(this.networkChangeReceiver);
+            getBaseContext().unregisterReceiver(NetworkChangeReceiver.getInstance());
         } catch (IllegalArgumentException e){
             Log.d("unregisterReceiver", e.getMessage());
         }
@@ -85,7 +85,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
-        if (!NetworkChangeReceiver.connection)
+        if (!NetworkChangeReceiver.getInstance().isConnected)
         {
             menu.add(Menu.NONE, R.string.noSignal, Menu.NONE, R.string.noSignal).setIcon(R.mipmap.ic_no_signal)
                     .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
@@ -131,10 +131,9 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
     }
 
     private void registerNetworkChangeReceiver(){
-
         IntentFilter networkFilter = new IntentFilter();
         networkFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
-        getBaseContext().registerReceiver(networkChangeReceiver, networkFilter);
+        getBaseContext().registerReceiver(NetworkChangeReceiver.getInstance(), networkFilter);
 
 
       /*  IntentFilter networkFilter = new IntentFilter();

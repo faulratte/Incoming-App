@@ -14,14 +14,22 @@ import android.widget.Toast;
  */
 public class NetworkChangeReceiver extends BroadcastReceiver {
 
-    private boolean isConnected;
-    public static boolean connection;
+    public boolean isConnected;
+
+    private static NetworkChangeReceiver instance;
+    public static NetworkChangeReceiver getInstance(){
+        return instance == null ? instance = new NetworkChangeReceiver() : instance;
+    }
+
+    private NetworkChangeReceiver(){
+
+    }
 
 
     @Override
     public void onReceive(Context context, Intent intent) {
         isNetworkAvailable(context);
-        connection = isConnected;
+//        connection = isConnected;
     }
 
     private boolean isNetworkAvailable(Context context) {
