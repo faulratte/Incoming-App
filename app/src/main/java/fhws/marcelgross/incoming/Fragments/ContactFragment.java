@@ -49,7 +49,7 @@ public class ContactFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_contact, container, false);
         db = new DBAdapter(getActivity());
         mProgressBar = (ProgressBar) view.findViewById(R.id.contacts_progressBar);
-        if ( NetworkChangeReceiver.connection){
+        if ( NetworkChangeReceiver.getInstance().isConnected){
             loadData();
         }
         setUpView(db.getAllContacts());

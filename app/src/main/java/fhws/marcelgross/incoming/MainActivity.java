@@ -31,7 +31,6 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        registerNetworkChangeReceiver();
         checkPlayServices();
 
 
@@ -59,6 +58,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
                             .setTabListener(this));
         }
 
+        registerNetworkChangeReceiver();
     }
 
     @Override
@@ -80,28 +80,6 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         } catch (IllegalArgumentException e){
             Log.d("unregisterReceiver", e.getMessage());
         }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu)
-    {
-        if (!NetworkChangeReceiver.getInstance().isConnected)
-        {
-            menu.add(Menu.NONE, R.string.noSignal, Menu.NONE, R.string.noSignal).setIcon(R.mipmap.ic_no_signal)
-                    .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-        }
-
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
-            case R.string.noSignal:
-                Toast.makeText(this, R.string.noInternetConection, Toast.LENGTH_LONG).show();
-            break;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -134,13 +112,6 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         IntentFilter networkFilter = new IntentFilter();
         networkFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
         getBaseContext().registerReceiver(NetworkChangeReceiver.getInstance(), networkFilter);
-
-
-      /*  IntentFilter networkFilter = new IntentFilter();
-        networkFilter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
-        networkFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
-        getBaseContext().registerReceiver(networkChangeReceiver, networkFilter);
-*/
     }
 
 }
