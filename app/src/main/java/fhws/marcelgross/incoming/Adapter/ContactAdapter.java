@@ -2,8 +2,12 @@ package fhws.marcelgross.incoming.Adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,10 +15,15 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageLoader;
+
+import java.io.InputStream;
 import java.util.List;
 
 import fhws.marcelgross.incoming.Objects.ContactObject;
 import fhws.marcelgross.incoming.R;
+import fhws.marcelgross.incoming.Volley.AppController;
 
 /**
  * Created by Marcel on 20.05.2015.
@@ -38,9 +47,10 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, int position) {
         final ContactObject contactObject = contactObjects.get(position);
 
+        Log.d( "Person", "Show person " + contactObject.getEmail() );
         holder.name_tv.setText(contactObject.getTitle()+" "+contactObject.getFirstname()+ " "+contactObject.getLastname());
         holder.status_tv.setText(contactObject.getStatus());
         holder.consultationHour_tv.setText(contactObject.getConsultationhour());
@@ -63,6 +73,26 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
         } else {
             holder.homepage_tv.setText(contactObject.getHomepage());
         }
+
+        if( contactObject.getPhoto().startsWith("http" ))
+        {
+            AppController.getInstance( this.context ).getImageLoader().get(contactObject.getPhoto(), new ImageLoader.ImageListener() {
+                @Override
+                public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
+                    holder.profile_pic.setImageBitmap( response.getBitmap() );
+                }
+
+                @Override
+                public void onErrorResponse(VolleyError error) {
+
+                }
+            });
+        }
+        else
+        {
+            holder.profile_pic.setImageResource( R.mipmap.pic_placeholder );
+        }
+
         holder.call_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -112,4 +142,37 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
            call_btn = (ImageButton) itemView.findViewById(R.id.contactCard_call_btn);
        }
    }
+
+    class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+        ImageView bmImage;
+
+        public DownloadImageTask(ImageView bmImage) {
+            this.bmImage = bmImage;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        protected Bitmap doInBackground(String... urls) {
+            String urldisplay = urls[0];
+            Bitmap mIcon11 = null;
+            try {
+                InputStream in = new java.net.URL(urldisplay).openStream();
+                mIcon11 = BitmapFactory.decodeStream(in);
+            } catch (Exception e) {
+                Log.e("Error", e.getMessage());
+                e.printStackTrace();
+            }
+            return mIcon11;
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap result) {
+            super.onPostExecute(result);
+            bmImage.setImageBitmap(result);
+        }
+    }
 }
+
