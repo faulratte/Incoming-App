@@ -3,10 +3,16 @@ package fhws.marcelgross.incoming.Fragments;
 
 import android.os.Bundle;
 import android.app.Fragment;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
@@ -23,6 +29,7 @@ import org.json.JSONArray;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import fhws.marcelgross.incoming.Adapter.ContactAdapter;
@@ -36,23 +43,28 @@ import fhws.marcelgross.incoming.Volley.AppController;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ContactFragment extends Fragment {
+public class ContactFragment extends Fragment implements SearchView.OnQueryTextListener, SearchView.OnCloseListener {
 
 
     private ProgressBar mProgressBar;
     private DBAdapter db;
     private View view;
+    private ArrayList<ContactObject> allContacts;
+    private ContactAdapter mContactAdapter;
+    private RecyclerView mRecyclerView;
     
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
         view = inflater.inflate(R.layout.fragment_contact, container, false);
         db = new DBAdapter(getActivity());
         mProgressBar = (ProgressBar) view.findViewById(R.id.contacts_progressBar);
         if ( NetworkChangeReceiver.getInstance().isConnected){
             loadData();
         }
-        setUpView(db.getAllContacts());
+        allContacts = db.getAllContacts();
+        setUpView(allContacts);
 
         return view;
     }
@@ -62,13 +74,13 @@ public class ContactFragment extends Fragment {
             mProgressBar.setVisibility(View.VISIBLE);
         } else {
             mProgressBar.setVisibility(View.GONE);
-            RecyclerView mRecyclerView = (RecyclerView) view.findViewById(R.id.contact_list);
+            mRecyclerView = (RecyclerView) view.findViewById(R.id.contact_list);
 
             LinearLayoutManager llm = new LinearLayoutManager(getActivity());
             llm.setOrientation(LinearLayoutManager.VERTICAL);
             mRecyclerView.setLayoutManager(llm);
             mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-            ContactAdapter mContactAdapter = new ContactAdapter(contactObjects, R.layout.contact_card, getActivity());
+            mContactAdapter = new ContactAdapter(contactObjects, R.layout.contact_card, getActivity());
             mRecyclerView.setAdapter(mContactAdapter);
             mContactAdapter.notifyDataSetChanged();
         }
@@ -115,4 +127,56 @@ public class ContactFragment extends Fragment {
     }
 
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.search_menu, menu);
+
+        final MenuItem item = menu.findItem(R.id.action_search);
+        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(item);
+        searchView.setOnQueryTextListener(this);
+        searchView.setOnCloseListener(this);
+    }
+
+    @Override
+    public boolean onQueryTextChange(String query) {
+        if (query.isEmpty()){
+            flush();
+        } else {
+            final ArrayList<ContactObject> filteredModelList = filter(allContacts, query);
+            mContactAdapter.animateTo(filteredModelList);
+            mRecyclerView.scrollToPosition(0);
+        }
+
+        return true;
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;
+    }
+
+
+    private ArrayList<ContactObject> filter(ArrayList<ContactObject> contactObjects, String query) {
+        query = query.toLowerCase().trim();
+
+        final ArrayList<ContactObject> filteredContactList = new ArrayList<>();
+        for (ContactObject contactObject : contactObjects) {
+            String firstname = contactObject.getFirstname().toLowerCase();
+            String lastname = contactObject.getLastname().toLowerCase();
+            if (firstname.contains(query) || lastname.contains(query)){
+                filteredContactList.add(contactObject);
+            }
+        }
+        return filteredContactList;
+    }
+
+    private void flush(){
+        allContacts = db.getAllContacts();
+        setUpView(allContacts);
+    }
+    @Override
+    public boolean onClose() {
+        flush();
+        return false;
+    }
 }

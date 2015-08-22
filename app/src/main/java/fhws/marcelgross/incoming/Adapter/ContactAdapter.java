@@ -19,6 +19,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import fhws.marcelgross.incoming.Objects.ContactObject;
@@ -117,6 +118,56 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
     @Override
     public int getItemCount() {
         return contactObjects == null ? 0 : contactObjects.size();
+    }
+
+    public void animateTo(ArrayList<ContactObject> contacts) {
+        applyAndAnimateRemovals(contacts);
+        applyAndAnimateAdditions(contacts);
+        applyAndAnimateMovedItems(contacts);
+    }
+
+    private void applyAndAnimateRemovals(ArrayList<ContactObject> newContacts){
+        for (int i = contactObjects.size() - 1; i >= 0; i--) {
+            final ContactObject contact = contactObjects.get(i);
+            if (!newContacts.contains(contact)) {
+                removeItem(i);
+            }
+        }
+    }
+    private void applyAndAnimateAdditions(ArrayList<ContactObject> newContacts) {
+        for (int i = 0, count = contactObjects.size(); i < count; i++) {
+            final ContactObject contact = contactObjects.get(i);
+            if (!contactObjects.contains(contact)) {
+                addItem(i, contact);
+            }
+        }
+    }
+
+    private void applyAndAnimateMovedItems(ArrayList<ContactObject> newContacts) {
+        for (int toPosition = newContacts.size() - 1; toPosition >= 0; toPosition--) {
+            final ContactObject contact = newContacts.get(toPosition);
+            final int fromPosition = contactObjects.indexOf(contact);
+            if (fromPosition >= 0 && fromPosition != toPosition) {
+                moveItem(fromPosition, toPosition);
+            }
+        }
+    }
+
+    public ContactObject removeItem(int position) {
+        final ContactObject contactObject = contactObjects.remove(position);
+        notifyItemRemoved(position);
+        return contactObject;
+    }
+
+    public void addItem(int position, ContactObject contactObject) {
+        contactObjects.add(position, contactObject);
+        notifyItemInserted(position);
+    }
+
+    public void moveItem(int fromPosition, int toPosition) {
+        final ContactObject contactObject = contactObjects.remove(fromPosition);
+        contactObjects.add(toPosition, contactObject);
+        notifyItemMoved(fromPosition, toPosition);
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder{
