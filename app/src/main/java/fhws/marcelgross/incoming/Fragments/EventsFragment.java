@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Response;
@@ -43,11 +44,12 @@ import fhws.marcelgross.incoming.Volley.AppController;
  */
 public class EventsFragment extends Fragment {
 
-    private ProgressBar mProgressBar;
+    private TextView noEvents;
     private DBAdapter db;
     private View view;
     private boolean[] checkedBoxes = new boolean[4];
     private final String PREFNAME = "event_box";
+    private  RecyclerView mRecyclerView;
 
 
     @Override
@@ -63,26 +65,34 @@ public class EventsFragment extends Fragment {
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_events, container, false);
         db = new DBAdapter(getActivity());
-        mProgressBar = (ProgressBar) view.findViewById(R.id.events_progressBar);
+        noEvents = (TextView) view.findViewById(R.id.noEvents);
         if (NetworkChangeReceiver.getInstance().isConnected){
             loadData();
         }
+
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.events_list);
         setUpView(db.getAllEvents(checkedBoxes));
 
         return view;
     }
 
     public void setUpView(ArrayList<EventsObject> eventsObjects){
+            if (eventsObjects.isEmpty() && checkBoxes()){
+                noEvents.setVisibility(View.VISIBLE);
+                mRecyclerView.setVisibility(View.GONE);
+            } else {
+                noEvents.setVisibility(View.GONE);
+                mRecyclerView.setVisibility(View.VISIBLE);
 
-            RecyclerView mRecyclerView = (RecyclerView) view.findViewById(R.id.events_list);
+                final LinearLayoutManager llm = new LinearLayoutManager(getActivity());
+                llm.setOrientation(LinearLayoutManager.VERTICAL);
+                mRecyclerView.setLayoutManager(llm);
+                mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+                EventsAdapter mEventsAdapter = new EventsAdapter(eventsObjects, R.layout.events_card, getActivity());
+                mRecyclerView.setAdapter(mEventsAdapter);
+                mEventsAdapter.notifyDataSetChanged();
+            }
 
-            LinearLayoutManager llm = new LinearLayoutManager(getActivity());
-            llm.setOrientation(LinearLayoutManager.VERTICAL);
-            mRecyclerView.setLayoutManager(llm);
-            mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-            EventsAdapter mEventsAdapter = new EventsAdapter(eventsObjects, R.layout.events_card, getActivity());
-            mRecyclerView.setAdapter(mEventsAdapter);
-            mEventsAdapter.notifyDataSetChanged();
     }
 
     private void loadData(){
@@ -182,4 +192,12 @@ public class EventsFragment extends Fragment {
             checkedBoxes[i] = sharedPreferences.getBoolean(PREFNAME +i, true);
         }
     }
+
+    private boolean checkBoxes(){
+        boolean result = false;
+        if(checkedBoxes[0] && checkedBoxes[1] && checkedBoxes[2] && checkedBoxes[3])
+            result = true;
+        return result;
+    }
+
 }

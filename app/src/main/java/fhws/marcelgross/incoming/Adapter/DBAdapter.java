@@ -41,6 +41,7 @@ public class DBAdapter extends SQLiteOpenHelper {
     private static final String COLUMN_CONTACT_ROOM = "contactRoom";
     private static final String COLUMN_CONTACT_CONSULTATIONHOUR = "contactConsultationHour";
     private static final String COLUMN_CONTACT_PHOTO = "contactPhoto";
+    private static final String COLUMN_CONTACT_FULLNAME = "contactFullname";
 
     private static final String TABLE_EVENT = "event";
     private static final String COLUMN_EVENT_ID = "eventId";
@@ -319,6 +320,7 @@ public class DBAdapter extends SQLiteOpenHelper {
                 contact.setRoom(cursor.getString(12));
                 contact.setConsultationhour(cursor.getString(13));
                 contact.setPhoto(cursor.getString(14));
+                contact.setFullName(cursor.getString(3) + " " + cursor.getString(4));
                 contacts.add(contact);
             } while (cursor.moveToNext());
         }

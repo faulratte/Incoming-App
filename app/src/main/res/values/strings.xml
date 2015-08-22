@@ -1,14 +1,10 @@
 <resources>
     <string name="app_name">Incoming</string>
 
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
+    <string name="action_settings">Einstellungen</string>
     <string name="action_search">Suchen</string>
+    <string name="action_info">About</string>
 
-<!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-
-    <string name="dummy_section_text">Section %1d is just a dummy section.</string>
     <string name="title">Titel</string>
     <string name="date">Datum</string>
     <string name="description">Beschreibung</string>
@@ -18,11 +14,11 @@
     <string name="contact_person">Kontaktperson</string>
     <string name="category">Kategorie</string>
 
-
     <string name="fhws">FHWS</string>
     <string name="uni">UNI</string>
     <string name="isc">ISC</string>
     <string name="holiday">Feiertage</string>
+
     <string name="name">Name</string>
     <string name="status">Status</string>
     <string name="consultationHour">Sprechstunde</string>
@@ -31,8 +27,12 @@
     <string name="homepage">Homepage</string>
     <string name="room">Zimmer</string>
     <string name="city">Stadt</string>
+
     <string name="noSignal">Kein Signal</string>
     <string name="noInternetConection">Keine Internetverbindung!</string>
+    <string name="noEvents">Im Moment sind keine Events verfügbar!</string>
+    <string name="noNews">Im Moment sind keine News verfügbar!</string>
+    <string name="noLinks">Im Moment sind keine Links verfügbar!</string>
 
     <string name="libary">Bibliotheken</string>
     <string name="eatDrink">Essen-Trinken</string>
@@ -43,4 +43,6 @@
     <string name="yes">Ja</string>
     <string name="no">Nein</string>
     <string name="opening_hours">Öffnungszeiten:</string>
+
+    <string name="aboutText">Incoming App</string>
 </resources>

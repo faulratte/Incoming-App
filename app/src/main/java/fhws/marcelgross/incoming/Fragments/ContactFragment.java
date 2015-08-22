@@ -64,6 +64,8 @@ public class ContactFragment extends Fragment implements SearchView.OnQueryTextL
             loadData();
         }
         allContacts = db.getAllContacts();
+
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.contact_list);
         setUpView(allContacts);
 
         return view;
@@ -72,9 +74,10 @@ public class ContactFragment extends Fragment implements SearchView.OnQueryTextL
     public void setUpView(ArrayList<ContactObject> contactObjects){
         if (contactObjects.isEmpty()){
             mProgressBar.setVisibility(View.VISIBLE);
+            mRecyclerView.setVisibility(View.GONE);
         } else {
             mProgressBar.setVisibility(View.GONE);
-            mRecyclerView = (RecyclerView) view.findViewById(R.id.contact_list);
+            mRecyclerView.setVisibility(View.VISIBLE);
 
             LinearLayoutManager llm = new LinearLayoutManager(getActivity());
             llm.setOrientation(LinearLayoutManager.VERTICAL);
@@ -161,9 +164,8 @@ public class ContactFragment extends Fragment implements SearchView.OnQueryTextL
 
         final ArrayList<ContactObject> filteredContactList = new ArrayList<>();
         for (ContactObject contactObject : contactObjects) {
-            String firstname = contactObject.getFirstname().toLowerCase();
-            String lastname = contactObject.getLastname().toLowerCase();
-            if (firstname.contains(query) || lastname.contains(query)){
+            String name = contactObject.getFullName().toLowerCase();
+            if (name.contains(query)){
                 filteredContactList.add(contactObject);
             }
         }

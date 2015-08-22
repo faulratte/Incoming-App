@@ -10,13 +10,12 @@
         tools:context=".MainActivity"
         />
 
-    <ProgressBar
-        style="?android:attr/progressBarStyleLarge"
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/links_progressBar"
+        android:text="@string/noLinks"
+        android:id="@+id/noLink"
         android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"
-        android:visibility="gone" />
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

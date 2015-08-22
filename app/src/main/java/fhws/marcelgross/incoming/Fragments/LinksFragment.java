@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Response;
@@ -38,19 +39,22 @@ import fhws.marcelgross.incoming.Volley.AppController;
  */
 public class LinksFragment extends Fragment {
 
-    private ProgressBar mProgressBar;
+    private TextView noLink;
     private DBAdapter db;
     private View view;
+    private  RecyclerView mRecyclerView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_links, container, false);
-        mProgressBar = (ProgressBar) view.findViewById(R.id.links_progressBar);
+        noLink = (TextView) view.findViewById(R.id.noLink);
         db = new DBAdapter(getActivity());
         if (NetworkChangeReceiver.getInstance().isConnected){
             loadData();
         }
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.links_list);
+
         setUpView(db.getAllLinks());
 
         return view;
@@ -59,12 +63,13 @@ public class LinksFragment extends Fragment {
     public void setUpView(ArrayList<LinksObject> linksObjects){
 
         if (linksObjects.isEmpty()){
-            mProgressBar.setVisibility(View.VISIBLE);
+            noLink.setVisibility(View.VISIBLE);
+            mRecyclerView.setVisibility(View.GONE);
         } else{
-            mProgressBar.setVisibility(View.GONE);
-            RecyclerView mRecyclerView = (RecyclerView)view.findViewById(R.id.links_list);
+            noLink.setVisibility(View.GONE);
+            mRecyclerView.setVisibility(View.VISIBLE);
 
-            LinearLayoutManager llm = new LinearLayoutManager(getActivity());
+            final LinearLayoutManager llm = new LinearLayoutManager(getActivity());
             llm.setOrientation(LinearLayoutManager.VERTICAL);
             mRecyclerView.setLayoutManager(llm);
             mRecyclerView.setItemAnimator(new DefaultItemAnimator());

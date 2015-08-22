@@ -1,15 +1,22 @@
 package fhws.marcelgross.incoming.Fragments;
 
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Response;
@@ -39,20 +46,22 @@ import fhws.marcelgross.incoming.Volley.AppController;
 public class NewsFragment extends Fragment {
 
 
-    private ProgressBar mProgressBar;
+    private TextView noNews;
     private DBAdapter db;
     private View view;
-
+    private  RecyclerView mRecyclerView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
         view = inflater.inflate(R.layout.fragment_news, container, false);
         db = new DBAdapter(getActivity());
-        mProgressBar = (ProgressBar) view.findViewById(R.id.news_progressBar);
+        noNews = (TextView) view.findViewById(R.id.noNews);
         if ( NetworkChangeReceiver.getInstance().isConnected){
             loadData();
         }
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.list);
         setUpView(db.getAllNews());
 
 
@@ -61,12 +70,13 @@ public class NewsFragment extends Fragment {
 
     public void setUpView(ArrayList<NewsObject> newsObjects){
         if (newsObjects.isEmpty()){
-            mProgressBar.setVisibility(View.VISIBLE);
+            noNews.setVisibility(View.VISIBLE);
+            mRecyclerView.setVisibility(View.GONE);
         } else {
-            mProgressBar.setVisibility(View.GONE);
-            RecyclerView mRecyclerView = (RecyclerView) view.findViewById(R.id.list);
+            noNews.setVisibility(View.GONE);
+            mRecyclerView.setVisibility(View.VISIBLE);
 
-            LinearLayoutManager llm = new LinearLayoutManager(getActivity());
+            final LinearLayoutManager llm = new LinearLayoutManager(getActivity());
             llm.setOrientation(LinearLayoutManager.VERTICAL);
             mRecyclerView.setLayoutManager(llm);
             mRecyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -114,6 +124,32 @@ public class NewsFragment extends Fragment {
         if (counter>0){
             setUpView(db.getAllNews());
         }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_main, menu);
+
+        final MenuItem item = menu.findItem(R.id.action_info);
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.action_info) {
+            startDialog();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void startDialog() {
+        Dialog dialog = new AlertDialog.Builder(getActivity())
+                .setView(LayoutInflater.from(getActivity()).inflate(R.layout.dialog, null)).setTitle(R.string.action_info).create();
+        dialog.show();
     }
 
 }

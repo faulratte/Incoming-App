@@ -1,5 +1,7 @@
 package fhws.marcelgross.incoming.Objects;
 
+import com.owlike.genson.annotation.JsonIgnore;
+
 /**
  * Created by Marcel on 28.04.2015.
  */
@@ -20,6 +22,8 @@ public class ContactObject {
     private String room;
     private String consultationhour;
     private String photo;
+    @JsonIgnore
+    private String fullName;
 
     public ContactObject(long id, String title, String status, String firstname, String lastname, String tel, String fax, String email, String homepage, String street, int zip, String city, String room, String consultationhour, String photo) {
         this.id = id;
@@ -37,6 +41,7 @@ public class ContactObject {
         this.room = room;
         this.consultationhour = consultationhour;
         this.photo = photo;
+        this.fullName = firstname + " " + lastname;
     }
 
     public ContactObject() {
@@ -162,24 +167,15 @@ public class ContactObject {
         this.photo = photo;
     }
 
-    @Override
-    public String toString() {
-        return "ContactObject{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
-                ", status='" + status + '\'' +
-                ", firstname='" + firstname + '\'' +
-                ", lastname='" + lastname + '\'' +
-                ", tel='" + tel + '\'' +
-                ", fax='" + fax + '\'' +
-                ", email='" + email + '\'' +
-                ", homepage='" + homepage + '\'' +
-                ", street='" + street + '\'' +
-                ", zip=" + zip +
-                ", city='" + city + '\'' +
-                ", room='" + room + '\'' +
-                ", consultationhour='" + consultationhour + '\'' +
-                ", photo='" + photo + '\'' +
-                '}';
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+    public void setFullName(String firstname, String lastname) {
+        this.fullName = firstname + " " + lastname;
     }
 }
