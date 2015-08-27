@@ -51,14 +51,10 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
     public void onBindViewHolder(final ViewHolder holder, int position) {
         final ContactObject contactObject = contactObjects.get(position);
 
-        Log.d( "Person", "Show person " + contactObject.getEmail() );
         holder.name_tv.setText(contactObject.getTitle()+" "+contactObject.getFirstname()+ " "+contactObject.getLastname());
         holder.status_tv.setText(contactObject.getStatus());
-        holder.consultationHour_tv.setText(contactObject.getConsultationhour());
         holder.office_tv.setText(contactObject.getStreet());
         holder.room_tv.setText(contactObject.getRoom());
-        holder.zipCode_tv.setText(String.valueOf(contactObject.getZip()));
-        holder.city_tv.setText(contactObject.getCity());
 
         if (!contactObject.getHomepage().trim().isEmpty()) {
             holder.homepage_tv.setText(R.string.homepage);
@@ -180,11 +176,8 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
            super(itemView);
            name_tv = (TextView) itemView.findViewById(R.id.contactCard_name_tv);
            status_tv = (TextView) itemView.findViewById(R.id.contactCard_status_tv);
-           consultationHour_tv = (TextView) itemView.findViewById(R.id.contactCard_consultationHour_tv);
            office_tv = (TextView) itemView.findViewById(R.id.contactCard_office_tv);
            room_tv = (TextView) itemView.findViewById(R.id.contactCard_room_tv);
-           zipCode_tv = (TextView) itemView.findViewById(R.id.contactCard_zipCode_tv);
-           city_tv = (TextView) itemView.findViewById(R.id.contactCard_city_tv);
            homepage_tv = (TextView) itemView.findViewById(R.id.contactCard_homepage_tv);
 
            profile_pic = (ImageView) itemView.findViewById(R.id.profile_pic);
