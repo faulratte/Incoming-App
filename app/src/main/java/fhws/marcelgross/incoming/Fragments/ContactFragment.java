@@ -66,7 +66,7 @@ public class ContactFragment extends Fragment implements SearchView.OnQueryTextL
         allContacts = db.getAllContacts();
 
         mRecyclerView = (RecyclerView) view.findViewById(R.id.contact_list);
-        setUpView(allContacts);
+        setUpView( new ArrayList<>(allContacts));
 
         return view;
     }

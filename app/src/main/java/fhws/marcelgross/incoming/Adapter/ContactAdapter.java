@@ -135,8 +135,8 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
         }
     }
     private void applyAndAnimateAdditions(ArrayList<ContactObject> newContacts) {
-        for (int i = 0, count = contactObjects.size(); i < count; i++) {
-            final ContactObject contact = contactObjects.get(i);
+        for (int i = 0; i < newContacts.size(); i++) {
+            final ContactObject contact = newContacts.get(i);
             if (!contactObjects.contains(contact)) {
                 addItem(i, contact);
             }
