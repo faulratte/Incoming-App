@@ -57,8 +57,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
         holder.room_tv.setText(contactObject.getRoom());
 
         if (!contactObject.getHomepage().trim().isEmpty()) {
-            holder.homepage_tv.setText(R.string.homepage);
-            holder.homepage_tv.setOnClickListener(new View.OnClickListener() {
+            holder.homepage_btn.setOnClickListener(new View.OnClickListener() {
 
                 @Override
                 public void onClick(View view) {
@@ -68,7 +67,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
                 }
             });
         } else {
-            holder.homepage_tv.setText(contactObject.getHomepage());
+            holder.homepage_btn.setVisibility(View.GONE);
         }
 
         if( contactObject.getPhoto().startsWith("http" ))
@@ -168,9 +167,9 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
 
     public static class ViewHolder extends RecyclerView.ViewHolder{
 
-        public TextView name_tv, status_tv, consultationHour_tv, office_tv, room_tv, zipCode_tv, city_tv, homepage_tv;
+        public TextView name_tv, status_tv, office_tv, room_tv;
         public ImageView profile_pic;
-        public ImageButton mail_btn, call_btn;
+        public ImageButton mail_btn, call_btn, homepage_btn;
 
        public ViewHolder(View itemView) {
            super(itemView);
@@ -178,12 +177,12 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
            status_tv = (TextView) itemView.findViewById(R.id.contactCard_status_tv);
            office_tv = (TextView) itemView.findViewById(R.id.contactCard_office_tv);
            room_tv = (TextView) itemView.findViewById(R.id.contactCard_room_tv);
-           homepage_tv = (TextView) itemView.findViewById(R.id.contactCard_homepage_tv);
 
            profile_pic = (ImageView) itemView.findViewById(R.id.profile_pic);
 
            mail_btn = (ImageButton) itemView.findViewById(R.id.contactCard_mail_btn);
            call_btn = (ImageButton) itemView.findViewById(R.id.contactCard_call_btn);
+           homepage_btn = (ImageButton) itemView.findViewById(R.id.contactCard_homepage_btn);
        }
    }
 
