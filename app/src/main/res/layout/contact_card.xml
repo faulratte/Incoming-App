@@ -57,6 +57,18 @@
                         android:text="@string/status"
                         android:id="@+id/contactCard_status_tv" />
 
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/consultationHour"
+                        android:id="@+id/textView"
+                        android:layout_marginTop="10dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/consultationHour"
+                        android:id="@+id/contactCard_consultationHour_tv" />
                 </LinearLayout>
 
 
@@ -69,26 +81,11 @@
                 android:layout_weight="0.5"
                 android:layout_marginTop="16dp">
 
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Raum "
-                         />
-
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/room"
-                        android:id="@+id/contactCard_room_tv" />
-
-                </LinearLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/room"
+                    android:id="@+id/contactCard_room_tv" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -97,6 +94,26 @@
                     android:id="@+id/contactCard_office_tv"
                     android:layout_marginRight="5dp"
                     android:layout_marginTop="5dp" />
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="5dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/zipCode"
+                        android:id="@+id/contactCard_zipCode_tv"
+                        android:layout_marginRight="5dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/city"
+                        android:id="@+id/contactCard_city_tv" />
+                </LinearLayout>
 
                 <RelativeLayout
                     android:orientation="horizontal"
@@ -122,6 +139,14 @@
                         android:layout_alignParentLeft="false"
                         android:layout_alignParentTop="true"
                         android:layout_alignParentRight="true">
+
+                        <ImageButton
+                            android:background="@drawable/fab"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/contactCard_homepage_btn"
+                            android:src="@mipmap/ic_homepage"
+                            android:layout_marginRight="10dp" />
 
                         <ImageButton
                             android:background="@drawable/fab"
