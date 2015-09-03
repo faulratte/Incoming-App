@@ -57,18 +57,6 @@
                         android:text="@string/status"
                         android:id="@+id/contactCard_status_tv" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/consultationHour"
-                        android:id="@+id/textView"
-                        android:layout_marginTop="10dp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/consultationHour"
-                        android:id="@+id/contactCard_consultationHour_tv" />
                 </LinearLayout>
 
 
@@ -95,25 +83,7 @@
                     android:layout_marginRight="5dp"
                     android:layout_marginTop="5dp" />
 
-                <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="5dp">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/zipCode"
-                        android:id="@+id/contactCard_zipCode_tv"
-                        android:layout_marginRight="5dp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/city"
-                        android:id="@+id/contactCard_city_tv" />
-                </LinearLayout>
 
                 <RelativeLayout
                     android:orientation="horizontal"
@@ -121,16 +91,6 @@
                     android:layout_height="match_parent"
                     android:layout_marginTop="10dp">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/homepage"
-                        android:id="@+id/contactCard_homepage_tv"
-                        style="@style/Hyperlink"
-                        android:layout_gravity="center_vertical"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentTop="false"
-                        android:layout_centerVertical="true" />
 
                     <LinearLayout
                         android:orientation="horizontal"
